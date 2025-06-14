@@ -133,6 +133,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -143,12 +144,14 @@ class _SplashScreenState extends State<SplashScreen>
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Logo section
               Expanded(
                 flex: 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // App logo/icon
                     AnimatedBuilder(
@@ -156,24 +159,34 @@ class _SplashScreenState extends State<SplashScreen>
                       builder: (context, child) {
                         return Transform.scale(
                           scale: _logoAnimation.value,
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
+                          child: GestureDetector(
+                            onTap: () {
+                              // Stop current animations
+                              _logoController.stop();
+                              _fadeController.stop();
+                              // Skip to navigation
+                              _navigateToNextScreen();
+                            },
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                                image: const DecorationImage(
+                                  image: AssetImage(
+                                    'assets/images/logo_hinh.png',
+                                  ),
+                                  fit: BoxFit.contain,
                                 ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.work,
-                              size: 60,
-                              color: Color(0xFF2196F3),
+                              ),
                             ),
                           ),
                         );
@@ -187,13 +200,26 @@ class _SplashScreenState extends State<SplashScreen>
                       builder: (context, child) {
                         return FadeTransition(
                           opacity: _fadeAnimation,
-                          child: const Text(
-                            'Freelance Hub',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
                               color: Colors.white,
-                              letterSpacing: 1.2,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              'assets/images/logo_chu.png',
+                              height: 50,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         );
@@ -209,9 +235,9 @@ class _SplashScreenState extends State<SplashScreen>
                         return FadeTransition(
                           opacity: _fadeAnimation,
                           child: const Text(
-                            'Kết nối tài năng, tạo ra giá trị',
+                            'Cùng tạo điều đáng yêu! 🧸',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 24,
                               color: Colors.white70,
                               letterSpacing: 0.5,
                             ),

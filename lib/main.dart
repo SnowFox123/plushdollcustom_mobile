@@ -22,7 +22,6 @@ Future<void> main() async {
   final token = prefs.getString('token');
   // print('[main.dart] SharedPreferences token at startup: $token');
 
-
   final store = Store<AppState>(authReducer, initialState: AppState.initial());
 
   if (token != null) {
@@ -44,7 +43,7 @@ class MyApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Freelance Hub',
+        title: 'PlushDollCustom',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           primaryColor: const Color(0xFF2196F3),
@@ -79,3 +78,5 @@ class MyApp extends StatelessWidget {
 }
 
 // flutter run -d chrome --web-port=5173
+// flutter run -d chrome lib/main.dart -- --web-port=5173 --web-renderer=html
+// flutter build web --web-renderer html --web-port=5173

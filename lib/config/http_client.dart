@@ -27,6 +27,8 @@ class HttpClient {
   // Add authorization header
   void setAuthToken(String token) {
     _defaultHeaders['Authorization'] = 'Bearer $token';
+    print('[HttpClient] Token set in header: Bearer $token');
+    print(token);
   }
 
   // Remove authorization header
