@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import '../config/http_client.dart';
+import '../network/http_client.dart';
 
 class AuthService {
   static Future<Map<String, dynamic>> login(

@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../redux/app_state.dart';
 import '../redux/auth_actions.dart';
 import 'login_screen.dart';
+import '../widgets/order_status_row.dart';
+import '../screens/order_list_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -64,16 +66,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Hồ sơ cá nhân',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-
             // Profile header
             Card(
               child: Padding(
@@ -134,6 +130,28 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+            const SizedBox(height: 20),
+
+            const Text(
+              'Đơn mua',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            // Đơn mua row
+            OrderStatusRow(
+              waitingConfirm: 0, // TODO: truyền số thực tế
+              waitingPickup: 1, // TODO: truyền số thực tế
+              delivering: 0, // TODO: truyền số thực tế
+              toReview: 2, // TODO: truyền số thực tế
+              onTap: (index) {
+                if (index == 0) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const OrderListScreen()),
+                  );
+                }
+              },
             ),
             const SizedBox(height: 20),
 

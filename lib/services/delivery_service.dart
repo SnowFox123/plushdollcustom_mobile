@@ -1,14 +1,14 @@
 import 'dart:convert';
 import '../network/http_client.dart';
 
-class PostService {
-  static Future<Map<String, dynamic>> getPost({
+class DeliveryService {
+  static Future<List<dynamic>> getDelivery({
     int page = 1,
     int size = 100,
   }) async {
     try {
       final response = await httpClient.get(
-        'project-post?page=$page&size=$size',
+        'delivery/token?page=$page&size=$size',
       );
 
       final body = jsonDecode(response.body);
@@ -22,18 +22,23 @@ class PostService {
         throw Exception('Invalid response format');
       }
 
-      return responseList;
+      final items = responseList['items'] as List<dynamic>?;
+      if (items == null) {
+        throw Exception('Invalid response format - missing items');
+      }
+
+      return items;
     } catch (e) {
       rethrow;
     }
   }
 
-  static Future<Map<String, dynamic>> getPostDetail({
-    required String projectPostId,
+  static Future<Map<String, dynamic>> getDeliveryDetail({
+    required String deliveryId,
   }) async {
     try {
       final response = await httpClient.get(
-        'project-post/detail?ProjectPostId=$projectPostId',
+        'delivery/delivery-detail?DeliveryID=$deliveryId',
       );
 
       final body = jsonDecode(response.body);

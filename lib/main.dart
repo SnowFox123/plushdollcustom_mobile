@@ -5,7 +5,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'config/http_client.dart';
+import 'network/http_client.dart';
 import 'redux/app_state.dart';
 import 'redux/auth_reducer.dart';
 import 'redux/auth_actions.dart';

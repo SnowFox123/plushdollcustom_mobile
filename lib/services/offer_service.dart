@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../config/http_client.dart';
+import '../network/http_client.dart';
 
 class OfferService {
   static Future<Map<String, dynamic>> getOffer({
