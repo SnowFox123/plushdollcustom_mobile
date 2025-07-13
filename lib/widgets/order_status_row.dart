@@ -1,23 +1,96 @@
 import 'package:flutter/material.dart';
+import '../services/order_status_service.dart';
+import '../models/order_status.dart';
 
-class OrderStatusRow extends StatelessWidget {
-  final int waitingConfirm;
-  final int waitingPickup;
-  final int delivering;
-  final int toReview;
+class OrderStatusRow extends StatefulWidget {
   final void Function(int index)? onTap;
 
-  const OrderStatusRow({
-    Key? key,
-    this.waitingConfirm = 0,
-    this.waitingPickup = 0,
-    this.delivering = 0,
-    this.toReview = 0,
-    this.onTap,
-  }) : super(key: key);
+  const OrderStatusRow({Key? key, this.onTap}) : super(key: key);
+
+  @override
+  State<OrderStatusRow> createState() => _OrderStatusRowState();
+}
+
+class _OrderStatusRowState extends State<OrderStatusRow> {
+  Map<String, int> _statusCount = {};
+  bool _isLoading = true;
+  String? _error;
+
+  // Định nghĩa các status chính để hiển thị
+  static const List<String> mainStatuses = [
+    'Pending',
+    'ReadyToPick',
+    'Delivering',
+    'Delivered',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStatusCount();
+  }
+
+  Future<void> _loadStatusCount() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
+      final statusCount = await OrderStatusService.getOrderStatusCount();
+
+      setState(() {
+        _statusCount = statusCount;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Card(
+        elevation: 0,
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(
+              4,
+              (index) => const CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Card(
+        elevation: 0,
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(Icons.error_outline, color: Colors.red),
+              Text('Lỗi tải dữ liệu', style: TextStyle(color: Colors.red)),
+              IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: _loadStatusCount,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 12),
@@ -25,32 +98,19 @@ class OrderStatusRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildOrderStatusItem(
-              icon: Icons.receipt_long,
-              label: 'Đơn hàng',
-              badge: waitingConfirm,
-              onTap: () => onTap?.call(0),
-            ),
-            _buildOrderStatusItem(
-              icon: Icons.inventory_2_outlined,
-              label: 'Chờ lấy hàng',
-              badge: waitingPickup,
-              onTap: () => onTap?.call(1),
-            ),
-            _buildOrderStatusItem(
-              icon: Icons.local_shipping_outlined,
-              label: 'Chờ giao hàng',
-              badge: delivering,
-              onTap: () => onTap?.call(2),
-            ),
-            _buildOrderStatusItem(
-              icon: Icons.star_border,
-              label: 'Đánh giá',
-              badge: toReview,
-              onTap: () => onTap?.call(3),
-            ),
-          ],
+          children: mainStatuses.asMap().entries.map((entry) {
+            final index = entry.key;
+            final status = entry.value;
+            final orderStatus = OrderStatus.getByCode(status);
+
+            return _buildOrderStatusItem(
+              icon: orderStatus?.icon ?? Icons.help_outline,
+              label: orderStatus?.name ?? status,
+              badge: _statusCount[status] ?? 0,
+              color: orderStatus?.color ?? Colors.grey,
+              onTap: () => widget.onTap?.call(index),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -60,6 +120,7 @@ class OrderStatusRow extends StatelessWidget {
     required IconData icon,
     required String label,
     required int badge,
+    required Color color,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -69,7 +130,7 @@ class OrderStatusRow extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              Icon(icon, size: 32, color: Colors.blue),
+              Icon(icon, size: 32, color: color),
               if (badge > 0)
                 Positioned(
                   right: -6,
@@ -93,7 +154,11 @@ class OrderStatusRow extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(label, style: const TextStyle(fontSize: 12)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );

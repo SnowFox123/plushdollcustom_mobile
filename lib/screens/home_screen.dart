@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'posts_screen.dart';
-import 'transactions_screen.dart';
+import 'order_list_screen.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,26 +15,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = const [
     PostsScreen(),
-    TransactionsScreen(),
+    OrderListScreen(),
     ProfileScreen(),
   ];
 
-  final List<String> _titles = ['Bài đăng', 'Giao dịch', 'Hồ sơ'];
+  final List<String> _titles = ['Bài đăng', 'Đơn hàng', 'Hồ sơ'];
 
   @override
   Widget build(BuildContext context) {
     // print('[HomeScreen] build() called, currentIndex = $_currentIndex');
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _titles[_currentIndex],
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        centerTitle: true,
-      ),
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -86,9 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.payment, size: _currentIndex == 1 ? 26 : 24),
+                child: Icon(
+                  Icons.shopping_bag,
+                  size: _currentIndex == 1 ? 26 : 24,
+                ),
               ),
-              label: 'Giao dịch',
+              label: 'Đơn hàng',
             ),
             BottomNavigationBarItem(
               icon: Container(

@@ -140,10 +140,10 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
             // Đơn mua row
             OrderStatusRow(
-              waitingConfirm: 0, // TODO: truyền số thực tế
-              waitingPickup: 1, // TODO: truyền số thực tế
-              delivering: 0, // TODO: truyền số thực tế
-              toReview: 2, // TODO: truyền số thực tế
+              // waitingConfirm: 0, // TODO: truyền số thực tế
+              // waitingPickup: 1, // TODO: truyền số thực tế
+              // delivering: 0, // TODO: truyền số thực tế
+              // toReview: 2, // TODO: truyền số thực tế
               onTap: (index) {
                 if (index == 0) {
                   Navigator.push(

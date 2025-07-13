@@ -15,11 +15,21 @@ class _PostsScreenState extends State<PostsScreen> {
   List<dynamic> posts = [];
   bool isLoading = true;
   String? error;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearchExpanded = false;
+  List<dynamic> _filteredPosts = [];
 
   @override
   void initState() {
     super.initState();
     _fetchPosts();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchPosts() async {
@@ -32,6 +42,7 @@ class _PostsScreenState extends State<PostsScreen> {
       final response = await PostService.getPost();
       setState(() {
         posts = response['items'] ?? [];
+        _filteredPosts = posts;
         isLoading = false;
       });
     } catch (e) {
@@ -40,6 +51,19 @@ class _PostsScreenState extends State<PostsScreen> {
         isLoading = false;
       });
     }
+  }
+
+  void _filterPosts() {
+    setState(() {
+      _filteredPosts = posts.where((post) {
+        final title = (post['title'] ?? '').toString().toLowerCase();
+        final fullName = (post['fullName'] ?? '').toString().toLowerCase();
+
+        return _searchQuery.isEmpty ||
+            title.contains(_searchQuery.toLowerCase()) ||
+            fullName.contains(_searchQuery.toLowerCase());
+      }).toList();
+    });
   }
 
   String _formatDateTime(String dateTimeStr) {
@@ -57,6 +81,74 @@ class _PostsScreenState extends State<PostsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _isSearchExpanded
+              ? Container(
+                  key: const ValueKey('search'),
+                  width: 320,
+                  height: 40,
+                  alignment: Alignment.center,
+                  child: TextField(
+                    controller: _searchController,
+                    autofocus: true,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: 'Tìm kiếm...',
+                      hintStyle: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 16,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: 10, // Để text nằm giữa theo chiều dọc
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _isSearchExpanded = false;
+                            _searchController.clear();
+                            _searchQuery = '';
+                            _filterPosts();
+                          });
+                        },
+                      ),
+                    ),
+                    onChanged: (value) {
+                      _searchQuery = value;
+                      _filterPosts();
+                    },
+                  ),
+                )
+              : const Text(
+                  'Bài đăng dự án',
+                  key: ValueKey('title'),
+                  style: TextStyle(fontSize: 20),
+                ),
+        ),
+        backgroundColor: Colors.blue[600],
+        foregroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: _isSearchExpanded
+                ? const SizedBox.shrink()
+                : IconButton(
+                    key: const ValueKey('search_icon'),
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      setState(() {
+                        _isSearchExpanded = true;
+                      });
+                    },
+                  ),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _fetchPosts,
         child: Padding(
@@ -64,11 +156,6 @@ class _PostsScreenState extends State<PostsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Bài đăng dự án',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
               if (isLoading)
                 const Expanded(
                   child: Center(child: CircularProgressIndicator()),
@@ -94,7 +181,7 @@ class _PostsScreenState extends State<PostsScreen> {
                   child: GridView.builder(
                     physics: const BouncingScrollPhysics(),
                     cacheExtent: 500,
-                    itemCount: posts.length,
+                    itemCount: _filteredPosts.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -103,7 +190,7 @@ class _PostsScreenState extends State<PostsScreen> {
                           childAspectRatio: 0.72,
                         ),
                     itemBuilder: (context, index) {
-                      final post = posts[index];
+                      final post = _filteredPosts[index];
                       return InkWell(
                         onTap: () {
                           showPostDetailModal(context, post['projectPostID']);
