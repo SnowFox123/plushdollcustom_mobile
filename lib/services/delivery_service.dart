@@ -14,7 +14,9 @@ class DeliveryService {
       final body = jsonDecode(response.body);
 
       if (!body['isSuccess']) {
-        throw Exception(body['message'] ?? 'Failed to get posts');
+        throw Exception(
+          body['message'] ?? 'Không thể lấy danh sách đơn giao hàng',
+        );
       }
 
       final responseList = body['responseRequestModel']?['responseList'];
@@ -45,7 +47,9 @@ class DeliveryService {
       print('Full API response: $body');
 
       if (!body['isSuccess']) {
-        throw Exception(body['message'] ?? 'Failed to get post detail');
+        throw Exception(
+          body['message'] ?? 'Không thể lấy chi tiết đơn giao hàng',
+        );
       }
 
       final responseData = body['responseRequestModel'];

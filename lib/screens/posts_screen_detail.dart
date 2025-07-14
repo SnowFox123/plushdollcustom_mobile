@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../services/post_service.dart';
 import '../services/offer_service.dart';
 import '../widgets/offer_card_widget.dart';
+import '../widgets/post_status_badge.dart';
+import '../constants/post_status_constants.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final String postId;
@@ -258,7 +260,7 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                                   ),
                                 ),
                               ),
-                              _buildStatusBadge(post!['isActive'] == true),
+                              PostStatusBadge(postStatus: post!['postStatus']),
                             ],
                           ),
                           const SizedBox(height: 2),
@@ -844,39 +846,6 @@ class _PostDetailScreenState extends State<PostDetailScreen>
     return DateFormat('HH:mm dd/MM/yyyy').format(dt);
   }
 
-  Widget _buildStatusBadge(bool isActive) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.green[50] : Colors.red[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isActive ? Colors.green : Colors.red,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            isActive ? Icons.check_circle : Icons.cancel,
-            color: isActive ? Colors.green : Colors.red,
-            size: 16,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            isActive ? 'Đang hoạt động' : 'Không hoạt động',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: isActive ? Colors.green[700] : Colors.red[700],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildDateBox(IconData icon, String label, String value) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
@@ -910,6 +879,17 @@ class _PostDetailScreenState extends State<PostDetailScreen>
         ],
       ),
     );
+  }
+
+  // Helper method to get post status information
+  PostStatus _getPostStatus() {
+    final postStatus = post!['postStatus'];
+    if (postStatus is int) {
+      return PostStatus.fromValue(postStatus);
+    } else if (postStatus is String) {
+      return PostStatus.fromName(postStatus);
+    }
+    return PostStatus.notReceived;
   }
 }
 

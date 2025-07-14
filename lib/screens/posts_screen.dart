@@ -3,6 +3,7 @@ import '../services/post_service.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:capstone_project_mobile_flutter/screens/posts_screen_detail.dart';
+import '../widgets/post_status_badge.dart';
 
 class PostsScreen extends StatefulWidget {
   const PostsScreen({super.key});
@@ -310,20 +311,34 @@ class _PostsScreenState extends State<PostsScreen> {
 
                                     const SizedBox(height: 4),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Icon(
-                                          Icons.calendar_today,
-                                          size: 13,
-                                          color: Colors.grey,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Ngày hoàn thành: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(post['finishDate']).add(const Duration(hours: 7)))}',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey,
+                                        PostStatusBadge(
+                                          postStatus: post['postStatus'],
+                                          fontSize: 10,
+                                          iconSize: 12,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 2,
+                                            horizontal: 6,
                                           ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.calendar_today,
+                                              size: 13,
+                                              color: Colors.grey,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '${DateFormat('dd/MM/yyyy').format(DateTime.parse(post['finishDate']).add(const Duration(hours: 7)))}',
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),

@@ -95,7 +95,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
           child: _isSearchExpanded
               ? Container(
                   key: const ValueKey('search'),
-                  width: double.infinity,
+                  width: 320,
                   height: 40,
                   child: TextField(
                     controller: _searchController,
@@ -110,7 +110,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 0,
-                        vertical: 4,
+                        vertical: 10, // Để text nằm giữa theo chiều dọc
                       ),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.close, color: Colors.white),

@@ -8,7 +8,7 @@ class PostService {
   }) async {
     try {
       final response = await httpClient.get(
-        'project-post?page=$page&size=$size',
+        'project-post/token?page=$page&size=$size',
       );
 
       final body = jsonDecode(response.body);
