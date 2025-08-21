@@ -1,4 +1,4 @@
-# capstone_project_mobile_flutter
+# plushdollcustom_mobile
 
 A new Flutter project.
 
