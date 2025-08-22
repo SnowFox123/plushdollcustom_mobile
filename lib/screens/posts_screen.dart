@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/post_service.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:capstone_project_mobile_flutter/screens/posts_screen_detail.dart';
+import 'package:PlushDollCustom/screens/posts_screen_detail.dart';
 import '../widgets/post_status_badge.dart';
 
 class PostsScreen extends StatefulWidget {

@@ -35,6 +35,9 @@ class AuthService {
         await prefs.setString('refreshToken', refreshToken);
       }
 
+      // Ensure HTTP client uses the latest access token immediately after login
+      httpClient.setAuthToken(accessToken);
+
       final userInfo = JwtDecoder.decode(accessToken);
       return {
         'token': accessToken,

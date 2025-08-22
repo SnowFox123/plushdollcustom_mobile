@@ -27,13 +27,28 @@ class HttpClient {
   // Add authorization header
   void setAuthToken(String token) {
     _defaultHeaders['Authorization'] = 'Bearer $token';
-    print('[HttpClient] Token set in header: Bearer $token');
-    print(token);
+    final masked = token.length > 12
+        ? '${token.substring(0, 10)}...${token.substring(token.length - 4)}'
+        : '***';
+    print('[HttpClient] Token set in header (masked): Bearer $masked');
   }
 
   // Remove authorization header
   void removeAuthToken() {
     _defaultHeaders.remove('Authorization');
+  }
+
+  // Ensure Authorization header is set from storage if missing
+  Future<void> _ensureAuthHeader() async {
+    if (!_defaultHeaders.containsKey('Authorization')) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+        if (token != null && token.isNotEmpty) {
+          setAuthToken(token);
+        }
+      } catch (_) {}
+    }
   }
 
   // Get headers with optional additional headers
@@ -51,6 +66,7 @@ class HttpClient {
     Map<String, String>? headers,
   }) async {
     final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
+    await _ensureAuthHeader();
     final requestHeaders = _getHeaders(headers);
 
     print('GET Request URL: $url');
@@ -73,6 +89,7 @@ class HttpClient {
     Map<String, String>? headers,
   }) async {
     final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
+    await _ensureAuthHeader();
     final requestHeaders = _getHeaders(headers);
 
     print('POST Request URL: $url');
@@ -100,6 +117,7 @@ class HttpClient {
     Map<String, String>? headers,
   }) async {
     final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
+    await _ensureAuthHeader();
     final requestHeaders = _getHeaders(headers);
 
     try {
@@ -122,6 +140,7 @@ class HttpClient {
     Map<String, String>? headers,
   }) async {
     final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
+    await _ensureAuthHeader();
     final requestHeaders = _getHeaders(headers);
 
     try {

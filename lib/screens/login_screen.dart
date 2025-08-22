@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:capstone_project_mobile_flutter/redux/app_state.dart';
-import 'package:capstone_project_mobile_flutter/redux/auth_actions.dart';
-import 'package:capstone_project_mobile_flutter/services/auth_service.dart';
-import 'package:capstone_project_mobile_flutter/screens/home_screen.dart';
+import 'package:PlushDollCustom/redux/app_state.dart';
+import 'package:PlushDollCustom/redux/auth_actions.dart';
+import 'package:PlushDollCustom/services/auth_service.dart';
+import 'package:PlushDollCustom/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
