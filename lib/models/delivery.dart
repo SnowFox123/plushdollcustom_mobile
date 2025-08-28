@@ -68,7 +68,7 @@ class Delivery {
   // Helper method to check if delivery is completed
   bool get isCompleted => deliveredAt != null;
 
-  // Helper method to get status display name
+  // Helper method to get status display name - updated to match actual API response
   String get statusDisplayName {
     switch (deliveryStatus.toLowerCase()) {
       case 'readytopick':
@@ -81,6 +81,28 @@ class Delivery {
         return 'Đã giao';
       case 'cancelled':
         return 'Đã hủy';
+      case 'created':
+        return 'Đã tạo mới';
+      case 'shippingtodesigner':
+        return 'Đang giao cho NTK';
+      case 'designerrejected':
+        return 'NTK từ chối';
+      case 'inprogress':
+        return 'Đang thực hiện';
+      case 'completed':
+        return 'Đã hoàn thành';
+      case 'shippingtocustomer':
+        return 'Đang giao cho khách';
+      case 'customerrejected':
+        return 'Khách từ chối';
+      case 'done':
+        return 'Hoàn tất';
+      case 'pendingconflict':
+        return 'Đang xử lý tranh chấp';
+      case 'rejected':
+        return 'Bị từ chối';
+      case 'requestshiptocus':
+        return 'Yêu cầu trả hàng cho KH';
       default:
         return deliveryStatus;
     }

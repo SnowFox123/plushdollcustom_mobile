@@ -289,7 +289,7 @@ class _PostsScreenState extends State<PostsScreen> {
                                       TextSpan(
                                         children: [
                                           const TextSpan(
-                                            text: 'Giá đề xuất: ',
+                                            text: 'Ngân sách: ',
                                             style: TextStyle(
                                               color: Colors.black87,
                                             ),
@@ -310,35 +310,31 @@ class _PostsScreenState extends State<PostsScreen> {
                                     ),
 
                                     const SizedBox(height: 4),
+                                    PostStatusBadge(
+                                      postStatus: post['postStatus'],
+                                      fontSize: 10,
+                                      iconSize: 12,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 2,
+                                        horizontal: 6,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        PostStatusBadge(
-                                          postStatus: post['postStatus'],
-                                          fontSize: 10,
-                                          iconSize: 12,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 2,
-                                            horizontal: 6,
-                                          ),
+                                        const Icon(
+                                          Icons.calendar_today,
+                                          size: 13,
+                                          color: Colors.grey,
                                         ),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.calendar_today,
-                                              size: 13,
-                                              color: Colors.grey,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              '${DateFormat('dd/MM/yyyy').format(DateTime.parse(post['finishDate']).add(const Duration(hours: 7)))}',
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${DateFormat('dd/MM/yyyy').format(DateTime.parse(post['finishDate']).add(const Duration(hours: 7)))}',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ],
                                     ),

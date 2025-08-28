@@ -19,14 +19,19 @@ class DeliveryService {
         );
       }
 
+      // Handle the case when responseRequestModel is null (no data)
+      if (body['responseRequestModel'] == null) {
+        return [];
+      }
+
       final responseList = body['responseRequestModel']?['responseList'];
       if (responseList == null) {
-        throw Exception('Invalid response format');
+        return [];
       }
 
       final items = responseList['items'] as List<dynamic>?;
       if (items == null) {
-        throw Exception('Invalid response format - missing items');
+        return [];
       }
 
       return items;

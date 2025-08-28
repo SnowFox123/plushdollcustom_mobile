@@ -21,7 +21,7 @@ class _DeliveryListScreenState extends State<DeliveryListScreen> {
   String? errorMessage;
   String selectedSortOption = 'Tất cả';
 
-  // Define sort options
+  // Define sort options - updated to match actual API response
   final List<String> sortOptions = [
     'Tất cả',
     'Sẵn sàng lấy hàng',
@@ -29,6 +29,17 @@ class _DeliveryListScreenState extends State<DeliveryListScreen> {
     'Đang giao',
     'Đã giao',
     'Đã hủy',
+    'Đã tạo mới',
+    'Đang giao cho NTK',
+    'NTK từ chối',
+    'Đang thực hiện',
+    'Đã hoàn thành',
+    'Đang giao cho khách',
+    'Khách từ chối',
+    'Hoàn tất',
+    'Đang xử lý tranh chấp',
+    'Bị từ chối',
+    'Yêu cầu trả hàng cho KH',
   ];
 
   @override
@@ -51,9 +62,13 @@ class _DeliveryListScreenState extends State<DeliveryListScreen> {
       final deliveryData = await DeliveryService.getDelivery();
 
       setState(() {
-        deliveries = deliveryData
-            .map((json) => Delivery.fromJson(json))
-            .toList();
+        if (deliveryData.isNotEmpty) {
+          deliveries = deliveryData
+              .map((json) => Delivery.fromJson(json))
+              .toList();
+        } else {
+          deliveries = [];
+        }
         _applySorting();
         isLoading = false;
       });
@@ -88,12 +103,88 @@ class _DeliveryListScreenState extends State<DeliveryListScreen> {
           case 'Đã hủy':
             targetStatus = 'Cancelled';
             break;
+          case 'Đã tạo mới':
+            targetStatus = 'Created';
+            break;
+          case 'Đang giao cho NTK':
+            targetStatus = 'ShippingToDesigner';
+            break;
+          case 'NTK từ chối':
+            targetStatus = 'DesignerRejected';
+            break;
+          case 'Đang thực hiện':
+            targetStatus = 'InProgress';
+            break;
+          case 'Đã hoàn thành':
+            targetStatus = 'Completed';
+            break;
+          case 'Đang giao cho khách':
+            targetStatus = 'ShippingToCustomer';
+            break;
+          case 'Khách từ chối':
+            targetStatus = 'CustomerRejected';
+            break;
+          case 'Hoàn tất':
+            targetStatus = 'Done';
+            break;
+          case 'Đang xử lý tranh chấp':
+            targetStatus = 'PendingConflict';
+            break;
+          case 'Bị từ chối':
+            targetStatus = 'Rejected';
+            break;
+          case 'Yêu cầu trả hàng cho KH':
+            targetStatus = 'RequestShipToCus';
+            break;
           default:
             targetStatus = selectedSortOption;
         }
 
-        return delivery.deliveryStatus == targetStatus;
+        // So sánh với status thực tế từ API (có thể là tiếng Anh hoặc tiếng Việt)
+        return delivery.deliveryStatus.toLowerCase() ==
+                targetStatus.toLowerCase() ||
+            delivery.statusDisplayName == selectedSortOption;
       }).toList();
+    }
+  }
+
+  // Helper method to get status colors
+  List<Color> _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'readytopick':
+        return [Colors.blue[50]!, Colors.blue[700]!];
+      case 'picked':
+        return [Colors.orange[50]!, Colors.orange[700]!];
+      case 'delivering':
+        return [Colors.yellow[50]!, Colors.yellow[700]!];
+      case 'delivered':
+        return [Colors.green[50]!, Colors.green[700]!];
+      case 'cancelled':
+        return [Colors.grey[50]!, Colors.grey[700]!];
+      case 'created':
+        return [Colors.indigo[50]!, Colors.indigo[700]!];
+      case 'shippingtodesigner':
+        return [Colors.purple[50]!, Colors.purple[700]!];
+      case 'designerrejected':
+        return [Colors.red[50]!, Colors.red[700]!];
+      case 'inprogress':
+        return [Colors.amber[50]!, Colors.amber[700]!];
+      case 'completed':
+        return [Colors.green[50]!, Colors.green[700]!];
+      case 'shippingtocustomer':
+        return [Colors.deepPurple[50]!, Colors.deepPurple[700]!];
+      case 'customerrejected':
+        return [Colors.red[50]!, Colors.red[700]!];
+      case 'done':
+        return [Colors.teal[50]!, Colors.teal[700]!];
+      case 'pendingconflict':
+        return [Colors.orange[50]!, Colors.orange[700]!];
+      case 'rejected':
+        return [Colors.red[50]!, Colors.red[700]!];
+      case 'requestshiptocus':
+        return [Colors.cyan[50]!, Colors.cyan[700]!];
+      default:
+        return [Colors.grey[50]!, Colors.grey[700]!];
     }
   }
 
@@ -120,7 +211,7 @@ class _DeliveryListScreenState extends State<DeliveryListScreen> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.withValues(alpha: 0.2),
                   spreadRadius: 1,
                   blurRadius: 3,
                   offset: const Offset(0, 2),
@@ -302,8 +393,10 @@ class _DeliveryListScreenState extends State<DeliveryListScreen> {
                   DeliveryStatusChip(
                     status: delivery.deliveryStatus,
                     customLabel: delivery.statusDisplayName,
-                    backgroundColor: Colors.amber[50],
-                    textColor: Colors.brown[700],
+                    backgroundColor: _getStatusColor(
+                      delivery.deliveryStatus,
+                    )[0],
+                    textColor: _getStatusColor(delivery.deliveryStatus)[1],
                   ),
                 ],
               ),

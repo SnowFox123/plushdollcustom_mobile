@@ -6,7 +6,7 @@ import '../redux/auth_actions.dart';
 import '../services/user_service.dart';
 import 'login_screen.dart';
 import '../widgets/order_status_row.dart';
-import '../screens/order_list_screen.dart';
+
 import '../screens/delivery_list_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -167,158 +167,114 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hồ sơ của tôi', style: TextStyle(fontSize: 20)),
+        title: Text(
+          'Hồ sơ của tôi',
+          style: TextStyle(fontSize: isLargeScreen ? 22 : 20),
+        ),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        toolbarHeight: isLargeScreen ? 70 : 60,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: isLargeScreen ? 16.0 : 8.0,
+          vertical: isLargeScreen ? 16.0 : 8.0,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile header
+            // Profile header - All in one row
             Card(
               color: Colors.grey[50],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              elevation: 0.5,
+              elevation: 1,
               child: Padding(
-                padding: const EdgeInsets.all(12.0), // reduced padding
-                child: Column(
+                padding: EdgeInsets.all(isLargeScreen ? 16.0 : 12.0),
+                child: Row(
                   children: [
                     // Avatar
                     CircleAvatar(
-                      radius: 32, // smaller avatar
+                      radius: isLargeScreen ? 28 : 22,
                       backgroundColor: Colors.blue[100],
                       backgroundImage: userProfile?['avatar'] != null
                           ? NetworkImage(userProfile!['avatar'])
                           : null,
                       child: userProfile?['avatar'] == null
-                          ? const Icon(
+                          ? Icon(
                               Icons.person,
-                              size: 32,
+                              size: isLargeScreen ? 28 : 22,
                               color: Colors.blue,
                             )
                           : null,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(width: isLargeScreen ? 12 : 10),
 
-                    // User name
-                    Text(
-                      userProfile?['fullName'] ?? 'Đang tải...',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
-                    // User role
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        _translateRole(userProfile?['roleDisplay']),
-                        style: const TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // User details grid
-                    if (userProfile != null) ...[
-                      Row(
+                    // User info
+                    Expanded(
+                      child: Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildDetailItem(
-                                  Icons.phone,
-                                  'Số điện thoại',
-                                  userProfile!['phoneNumber'] ?? 'Không có',
-                                  iconSize: 18,
-                                  labelSize: 11,
-                                  valueSize: 13,
-                                ),
-                                const SizedBox(height: 6),
-                                _buildDetailItem(
-                                  Icons.email,
-                                  'Email',
-                                  userProfile!['email'] ?? 'Không có',
-                                  iconSize: 18,
-                                  labelSize: 11,
-                                  valueSize: 13,
-                                ),
-                              ],
+                          Text(
+                            userProfile?['fullName'] ?? 'Đang tải...',
+                            style: TextStyle(
+                              fontSize: isLargeScreen ? 16 : 14,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildDetailItem(
-                                  Icons.person_outline,
-                                  'Giới tính',
-                                  _translateGender(
-                                    userProfile!['genderDisplay'],
-                                  ),
-                                  iconSize: 18,
-                                  labelSize: 11,
-                                  valueSize: 13,
-                                ),
-                                const SizedBox(height: 6),
-                                _buildDetailItem(
-                                  Icons.calendar_today,
-                                  'Ngày tạo',
-                                  _formatDate(userProfile!['createdAt']),
-                                  iconSize: 18,
-                                  labelSize: 11,
-                                  valueSize: 13,
-                                ),
-                              ],
+                          SizedBox(width: isLargeScreen ? 12 : 8),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isLargeScreen ? 12 : 8,
+                              vertical: isLargeScreen ? 4 : 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[50],
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.blue[200]!,
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              _translateRole(userProfile?['roleDisplay']),
+                              style: TextStyle(
+                                color: Colors.blue[700],
+                                fontWeight: FontWeight.w600,
+                                fontSize: isLargeScreen ? 12 : 10,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
 
-                    // Reputation stats row
+                    // Reputation stats inline - Compact
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildReputationItem(
-                          'Điểm uy tín',
+                          'Điểm',
                           userReputation?['currentScore']?.toString() ?? '0',
                           Icons.star,
                           Colors.amber,
-                          iconSize: 20,
-                          valueSize: 15,
-                          labelSize: 11,
+                          iconSize: isLargeScreen ? 22 : 18,
+                          valueSize: isLargeScreen ? 18 : 16,
+                          labelSize: isLargeScreen ? 11 : 10,
                         ),
+                        SizedBox(width: isLargeScreen ? 20 : 16),
                         _buildReputationItem(
-                          'Cấp độ',
+                          'Cấp',
                           _getLevelText(userReputation?['level']),
                           Icons.emoji_events,
                           _getLevelColor(userReputation?['level']),
-                          iconSize: 20,
-                          valueSize: 15,
-                          labelSize: 11,
+                          iconSize: isLargeScreen ? 22 : 18,
+                          valueSize: isLargeScreen ? 18 : 16,
+                          labelSize: isLargeScreen ? 11 : 10,
                         ),
                       ],
                     ),
@@ -326,7 +282,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+
+            // User details grid
+            if (userProfile != null) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey[200]!),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.blue[600],
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Thông tin cá nhân',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Each detail on one row
+                    Column(
+                      children: [
+                        _buildDetailCard(
+                          Icons.phone,
+                          'Số điện thoại',
+                          userProfile!['phoneNumber'] ?? 'Không có',
+                          Colors.blue,
+                        ),
+                        const SizedBox(height: 8),
+                        _buildDetailCard(
+                          Icons.email,
+                          'Email',
+                          userProfile!['email'] ?? 'Không có',
+                          Colors.green,
+                        ),
+                        const SizedBox(height: 8),
+                        _buildDetailCard(
+                          Icons.person_outline,
+                          'Giới tính',
+                          _translateGender(userProfile!['genderDisplay']),
+                          Colors.purple,
+                        ),
+                        const SizedBox(height: 8),
+                        _buildDetailCard(
+                          Icons.calendar_today,
+                          'Ngày tạo',
+                          _formatDate(userProfile!['createdAt']),
+                          Colors.orange,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
 
             const Text(
               'Đơn mua',
@@ -367,29 +393,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               },
             ),
-            const SizedBox(height: 20),
-
-            // Menu items
-            const Text(
-              'Cài đặt',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-
-            _buildMenuItem(
-              icon: Icons.help_outline,
-              title: 'Trợ giúp',
-              subtitle: 'Hướng dẫn sử dụng',
-              onTap: () {},
-            ),
-
-            _buildMenuItem(
-              icon: Icons.info_outline,
-              title: 'Về ứng dụng',
-              subtitle: 'Phiên bản 1.0.0',
-              onTap: () {},
-            ),
-
             const SizedBox(height: 20),
 
             // Logout button
@@ -484,6 +487,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDetailCard(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+  ) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+
+    return Container(
+      padding: EdgeInsets.all(isLargeScreen ? 14 : 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.1),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: isLargeScreen ? 18 : 16),
+          SizedBox(width: isLargeScreen ? 12 : 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: isLargeScreen ? 12 : 11,
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: isLargeScreen ? 4 : 3),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: isLargeScreen ? 14 : 13,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

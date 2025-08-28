@@ -46,49 +46,64 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0,
         automaticallyImplyLeading: false,
+        toolbarHeight: isLargeScreen ? 70 : 60,
         title: Row(
           children: [
-            Icon(Icons.inventory_2_outlined, color: Colors.white),
-            const SizedBox(width: 8),
-            const Text(
+            Icon(
+              Icons.inventory_2_outlined,
+              color: Colors.white,
+              size: isLargeScreen ? 24 : 20,
+            ),
+            SizedBox(width: isLargeScreen ? 12 : 8),
+            Text(
               'Chi tiết giao hàng',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: isLargeScreen ? 20 : 16,
               ),
             ),
             Spacer(),
             if (deliveryDetail != null &&
                 deliveryDetail!['deliveryStatus'] != null)
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isLargeScreen ? 16 : 10,
+                  vertical: isLargeScreen ? 8 : 5,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.yellow[100],
+                  color: _getStatusColor(deliveryDetail!['deliveryStatus'])[0],
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.check_circle_outline,
-                      color: Colors.amber[800],
-                      size: 16,
+                      _getStatusIcon(deliveryDetail!['deliveryStatus']),
+                      color: _getStatusColor(
+                        deliveryDetail!['deliveryStatus'],
+                      )[1],
+                      size: isLargeScreen ? 18 : 14,
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      _getStatusText(deliveryDetail!['deliveryStatus']),
-                      style: const TextStyle(
-                        color: Colors.amber,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                    SizedBox(width: isLargeScreen ? 6 : 4),
+                    Flexible(
+                      child: Text(
+                        _getStatusText(deliveryDetail!['deliveryStatus']),
+                        style: TextStyle(
+                          color: _getStatusColor(
+                            deliveryDetail!['deliveryStatus'],
+                          )[1],
+                          fontWeight: FontWeight.bold,
+                          fontSize: isLargeScreen ? 16 : 12,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -98,7 +113,11 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
         ),
         actions: [
           IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
+            icon: Icon(
+              Icons.close,
+              color: Colors.white,
+              size: isLargeScreen ? 24 : 20,
+            ),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -108,6 +127,8 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
   }
 
   Widget _buildBody() {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+    
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -117,26 +138,36 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
-            const SizedBox(height: 16),
+            Icon(
+              Icons.error_outline,
+              size: isLargeScreen ? 80 : 64,
+              color: Colors.red[300],
+            ),
+            SizedBox(height: isLargeScreen ? 24 : 16),
             Text(
               'Có lỗi xảy ra',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: isLargeScreen ? 22 : 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.red[700],
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: isLargeScreen ? 12 : 8),
             Text(
               errorMessage!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: isLargeScreen ? 16 : 14,
+              ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: isLargeScreen ? 24 : 16),
             ElevatedButton(
               onPressed: _loadDeliveryDetail,
-              child: const Text('Thử lại'),
+              child: Text(
+                'Thử lại',
+                style: TextStyle(fontSize: isLargeScreen ? 16 : 14),
+              ),
             ),
           ],
         ),
@@ -144,101 +175,138 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     }
 
     if (deliveryDetail == null) {
-      return const Center(child: Text('Không tìm thấy thông tin đơn hàng'));
+      return Center(
+        child: Text(
+          'Không tìm thấy thông tin đơn hàng',
+          style: TextStyle(fontSize: isLargeScreen ? 18 : 16),
+        ),
+      );
     }
 
     final images = deliveryDetail!['images'] as List<dynamic>? ?? [];
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isLargeScreen ? 24 : 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header: Mã đơn hàng, trạng thái, giá
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(isLargeScreen ? 20 : 16),
               child: Row(
                 children: [
-                  Icon(Icons.description_outlined, color: Colors.blue),
-                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.description_outlined,
+                    color: Colors.blue,
+                    size: isLargeScreen ? 24 : 20,
+                  ),
+                  SizedBox(width: isLargeScreen ? 12 : 8),
                   Expanded(
                     child: Text.rich(
                       TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'Mã đơn hàng: ',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: isLargeScreen ? 16 : 14,
+                            ),
                           ),
                           TextSpan(
                             text: deliveryDetail!['orderCode'] ?? '',
-                            style: const TextStyle(color: Colors.blue),
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: isLargeScreen ? 16 : 14,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: isLargeScreen ? 12 : 8),
                   Text(
                     '${deliveryDetail!['deliveryPrice'].toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} đ',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.green,
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: isLargeScreen ? 24 : 20,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: isLargeScreen ? 20 : 16),
 
           // Thông tin thời gian
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(isLargeScreen ? 20 : 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.calendar_month_outlined, color: Colors.pink),
-                      const SizedBox(width: 8),
-                      const Text(
+                      Icon(
+                        Icons.calendar_month_outlined,
+                        color: Colors.pink,
+                        size: isLargeScreen ? 24 : 20,
+                      ),
+                      SizedBox(width: isLargeScreen ? 12 : 8),
+                      Text(
                         'Thông tin thời gian',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: isLargeScreen ? 18 : 16,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: isLargeScreen ? 16 : 12),
                   Row(
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Ngày tạo',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: isLargeScreen ? 16 : 14,
+                              ),
                             ),
+                            SizedBox(height: isLargeScreen ? 6 : 4),
                             Text(
                               _formatDate(deliveryDetail!['createdAt'] ?? ''),
+                              style: TextStyle(
+                                fontSize: isLargeScreen ? 15 : 13,
+                              ),
                             ),
                           ],
                         ),
                       ),
+                      SizedBox(width: isLargeScreen ? 20 : 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Ngày giao hàng',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: isLargeScreen ? 16 : 14,
+                              ),
                             ),
+                            SizedBox(height: isLargeScreen ? 6 : 4),
                             Text(
                               deliveryDetail!['deliveredAt'] != null
                                   ? _formatDate(deliveryDetail!['deliveredAt'])
                                   : 'Chưa có',
+                              style: TextStyle(
+                                fontSize: isLargeScreen ? 15 : 13,
+                              ),
                             ),
                           ],
                         ),
@@ -249,7 +317,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: isLargeScreen ? 20 : 16),
 
           // Người gửi & Người nhận
           Row(
@@ -262,7 +330,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                   phone: deliveryDetail!['senderPhoneNumber'],
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: isLargeScreen ? 16 : 12),
               Expanded(
                 child: _buildPersonCard(
                   isSender: false,
@@ -273,7 +341,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: isLargeScreen ? 20 : 16),
 
           // Thông tin gói hàng
           Card(
@@ -487,9 +555,11 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     required String? address,
     required String? phone,
   }) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+    
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(isLargeScreen ? 20 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -498,41 +568,68 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                 Icon(
                   Icons.person_outline,
                   color: isSender ? Colors.red : Colors.green,
+                  size: isLargeScreen ? 22 : 18,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: isLargeScreen ? 10 : 8),
                 Text(
                   isSender ? 'Người gửi' : 'Người nhận',
                   style: TextStyle(
                     color: isSender ? Colors.red : Colors.green,
                     fontWeight: FontWeight.bold,
+                    fontSize: isLargeScreen ? 16 : 14,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: isLargeScreen ? 12 : 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.person, size: 18, color: Colors.grey[700]),
-                const SizedBox(width: 6),
-                Expanded(child: Text(name ?? '')),
+                Icon(
+                  Icons.person,
+                  size: isLargeScreen ? 20 : 18,
+                  color: Colors.grey[700],
+                ),
+                SizedBox(width: isLargeScreen ? 8 : 6),
+                Expanded(
+                  child: Text(
+                    name ?? '',
+                    style: TextStyle(fontSize: isLargeScreen ? 15 : 13),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: isLargeScreen ? 6 : 4),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.location_on, size: 18, color: Colors.grey[700]),
-                const SizedBox(width: 6),
-                Expanded(child: Text(address ?? '')),
+                Icon(
+                  Icons.location_on,
+                  size: isLargeScreen ? 20 : 18,
+                  color: Colors.grey[700],
+                ),
+                SizedBox(width: isLargeScreen ? 8 : 6),
+                Expanded(
+                  child: Text(
+                    address ?? '',
+                    style: TextStyle(fontSize: isLargeScreen ? 15 : 13),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: isLargeScreen ? 6 : 4),
             Row(
               children: [
-                Icon(Icons.phone, size: 18, color: Colors.grey[700]),
-                const SizedBox(width: 6),
-                Text(phone ?? ''),
+                Icon(
+                  Icons.phone,
+                  size: isLargeScreen ? 20 : 18,
+                  color: Colors.grey[700],
+                ),
+                SizedBox(width: isLargeScreen ? 8 : 6),
+                Text(
+                  phone ?? '',
+                  style: TextStyle(fontSize: isLargeScreen ? 15 : 13),
+                ),
               ],
             ),
           ],
@@ -557,12 +654,123 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
   }
 
   String _getStatusText(String? status) {
-    switch (status) {
-      case 'ReadyToPick':
+    if (status == null) return '';
+
+    switch (status.toLowerCase()) {
+      case 'readytopick':
         return 'Sẵn sàng lấy hàng';
-      // Thêm các trạng thái khác nếu cần
+      case 'picked':
+        return 'Đã lấy hàng';
+      case 'delivering':
+        return 'Đang giao';
+      case 'delivered':
+        return 'Đã giao';
+      case 'cancelled':
+        return 'Đã hủy';
+      case 'created':
+        return 'Đã tạo mới';
+      case 'shippingtodesigner':
+        return 'Đang giao cho NTK';
+      case 'designerrejected':
+        return 'NTK từ chối';
+      case 'inprogress':
+        return 'Đang thực hiện';
+      case 'completed':
+        return 'Đã hoàn thành';
+      case 'shippingtocustomer':
+        return 'Đang giao cho khách';
+      case 'customerrejected':
+        return 'Khách từ chối';
+      case 'done':
+        return 'Hoàn tất';
+      case 'pendingconflict':
+        return 'Đang xử lý tranh chấp';
+      case 'rejected':
+        return 'Bị từ chối';
+      case 'requestshiptocus':
+        return 'Yêu cầu trả hàng cho KH';
       default:
-        return status ?? '';
+        return status;
+    }
+  }
+
+  // Helper method to get status colors
+  List<Color> _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'readytopick':
+        return [Colors.blue[50]!, Colors.blue[700]!];
+      case 'picked':
+        return [Colors.orange[50]!, Colors.orange[700]!];
+      case 'delivering':
+        return [Colors.yellow[50]!, Colors.yellow[700]!];
+      case 'delivered':
+        return [Colors.green[50]!, Colors.green[700]!];
+      case 'cancelled':
+        return [Colors.grey[50]!, Colors.grey[700]!];
+      case 'created':
+        return [Colors.indigo[50]!, Colors.indigo[700]!];
+      case 'shippingtodesigner':
+        return [Colors.purple[50]!, Colors.purple[700]!];
+      case 'designerrejected':
+        return [Colors.red[50]!, Colors.red[700]!];
+      case 'inprogress':
+        return [Colors.amber[50]!, Colors.amber[700]!];
+      case 'completed':
+        return [Colors.green[50]!, Colors.green[700]!];
+      case 'shippingtocustomer':
+        return [Colors.deepPurple[50]!, Colors.deepPurple[700]!];
+      case 'customerrejected':
+        return [Colors.red[50]!, Colors.red[700]!];
+      case 'done':
+        return [Colors.teal[50]!, Colors.teal[700]!];
+      case 'pendingconflict':
+        return [Colors.orange[50]!, Colors.orange[700]!];
+      case 'rejected':
+        return [Colors.red[50]!, Colors.red[700]!];
+      case 'requestshiptocus':
+        return [Colors.cyan[50]!, Colors.cyan[700]!];
+      default:
+        return [Colors.grey[50]!, Colors.grey[700]!];
+    }
+  }
+
+  // Helper method to get status icons
+  IconData _getStatusIcon(String status) {
+    switch (status.toLowerCase()) {
+      case 'readytopick':
+        return Icons.schedule;
+      case 'picked':
+        return Icons.local_shipping;
+      case 'delivering':
+        return Icons.delivery_dining;
+      case 'delivered':
+        return Icons.check_circle;
+      case 'cancelled':
+        return Icons.cancel;
+      case 'created':
+        return Icons.add_circle;
+      case 'shippingtodesigner':
+        return Icons.forward;
+      case 'designerrejected':
+        return Icons.block;
+      case 'inprogress':
+        return Icons.pending;
+      case 'completed':
+        return Icons.done_all;
+      case 'shippingtocustomer':
+        return Icons.local_shipping_outlined;
+      case 'customerrejected':
+        return Icons.thumb_down;
+      case 'done':
+        return Icons.verified;
+      case 'pendingconflict':
+        return Icons.warning;
+      case 'rejected':
+        return Icons.close;
+      case 'requestshiptocus':
+        return Icons.assignment_return;
+      default:
+        return Icons.info;
     }
   }
 
@@ -581,7 +789,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),

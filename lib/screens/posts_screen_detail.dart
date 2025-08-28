@@ -211,9 +211,11 @@ class _PostDetailScreenState extends State<PostDetailScreen>
       body: SafeArea(
         child: Column(
           children: [
-            // Header với gradient (compact)
+            // Header với gradient (responsive)
             Container(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.width > 600 ? 16 : 10,
+              ),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -226,23 +228,34 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                padding: EdgeInsets.fromLTRB(
+                  MediaQuery.of(context).size.width > 600 ? 20 : 12,
+                  MediaQuery.of(context).size.width > 600 ? 12 : 8,
+                  MediaQuery.of(context).size.width > 600 ? 20 : 12,
+                  MediaQuery.of(context).size.width > 600 ? 12 : 8,
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white, width: 1.5),
-                        borderRadius: BorderRadius.circular(22),
+                        borderRadius: BorderRadius.circular(
+                          MediaQuery.of(context).size.width > 600 ? 28 : 22,
+                        ),
                       ),
                       child: CircleAvatar(
                         backgroundImage: NetworkImage(
                           post!['avatar'] ?? 'assets/images/logo_hinh.png',
                         ),
-                        radius: 20,
+                        radius: MediaQuery.of(context).size.width > 600
+                            ? 26
+                            : 20,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width > 600 ? 16 : 10,
+                    ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,9 +265,12 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                               Expanded(
                                 child: Text(
                                   post!['fullName'] ?? 'Người dùng',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 15,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width > 600
+                                        ? 18
+                                        : 15,
                                     color: Colors.white,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -263,48 +279,182 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                               PostStatusBadge(postStatus: post!['postStatus']),
                             ],
                           ),
-                          const SizedBox(height: 2),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.event,
-                                size: 16,
-                                color: Colors.white70,
-                              ),
-                              const SizedBox(width: 3),
-                              Text(
-                                _formatDateTime(post!['createdAt']),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const Icon(
-                                Icons.access_time,
-                                size: 16,
-                                color: Colors.white70,
-                              ),
-                              const SizedBox(width: 3),
-                              Text(
-                                post!['finishDate'] != null
-                                    ? _formatDateTime(post!['finishDate'])
-                                    : '---',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width > 600
+                                ? 4
+                                : 2,
                           ),
+                          // Responsive date row - stack vertically on small screens
+                          MediaQuery.of(context).size.width > 600
+                              ? Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.create,
+                                            size: 18,
+                                            color: Colors.white70,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Ngày tạo',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white60,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  _formatDateTime(
+                                                    post!['createdAt'],
+                                                  ),
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white70,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.schedule,
+                                            size: 18,
+                                            color: Colors.white70,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Hạn chót',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white60,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  post!['finishDate'] != null
+                                                      ? _formatDateTime(
+                                                          post!['finishDate'],
+                                                        )
+                                                      : '---',
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white70,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.create,
+                                          size: 14,
+                                          color: Colors.white70,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Ngày tạo',
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.white60,
+                                                ),
+                                              ),
+                                              Text(
+                                                _formatDateTime(
+                                                  post!['createdAt'],
+                                                ),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white70,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.schedule,
+                                          size: 14,
+                                          color: Colors.white70,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Hạn chót',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white60,
+                                                ),
+                                              ),
+                                              Text(
+                                                post!['finishDate'] != null
+                                                    ? _formatDateTime(
+                                                        post!['finishDate'],
+                                                      )
+                                                    : '---',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white70,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
                         color: Colors.white,
-                        size: 22,
+                        size: MediaQuery.of(context).size.width > 600 ? 26 : 22,
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -402,7 +552,7 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                                     const SizedBox(width: 12),
                                     _infoBox(
                                       icon: Icons.sell,
-                                      label: 'Giá đề xuất',
+                                      label: 'Ngân sách',
                                       value: '${post!['suggestedPrice']} đ',
                                       color: Colors.blue,
                                     ),
@@ -969,3 +1119,4 @@ void showPostDetailModal(BuildContext context, String postId) {
     ),
   );
 }
+
