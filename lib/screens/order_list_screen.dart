@@ -3,6 +3,79 @@ import '../services/order_service.dart';
 import 'order_detail_screen.dart'; // Added import for OrderDetailScreen
 import '../widgets/empty_order_widget.dart'; // Thêm import widget empty
 
+// Mapping backend order statuses to Vietnamese labels
+const Map<String, String> kOrderStatusViMap = {
+  'Created': 'Đã tạo mới',
+  'ShippingToDesigner': 'Đang giao cho NTK',
+  'DesignerRejected': 'NTK từ chối',
+  'InProgress': 'Đang thực hiện',
+  'Completed': 'Đã hoàn thành',
+  'ShippingToCustomer': 'Đang giao cho khách',
+  'CustomerRejected': 'Khách từ chối',
+  'Done': 'Hoàn tất',
+  'PendingConflict': 'Đang xử lý tranh chấp',
+  'Rejected': 'Bị từ chối',
+  'RequestShipToCus': 'Yêu cầu trả hàng cho KH',
+};
+
+Color _statusBgColor(String status) {
+  switch (status.trim()) {
+    case 'Created':
+      return Colors.grey[100]!;
+    case 'ShippingToDesigner':
+      return Colors.indigo[50]!;
+    case 'DesignerRejected':
+      return Colors.red[50]!;
+    case 'InProgress':
+      return Colors.blue[50]!;
+    case 'Completed':
+      return Colors.green[50]!;
+    case 'ShippingToCustomer':
+      return Colors.orange[50]!;
+    case 'CustomerRejected':
+      return Colors.red[50]!;
+    case 'Done':
+      return Colors.teal[50]!;
+    case 'PendingConflict':
+      return Colors.amber[50]!;
+    case 'Rejected':
+      return Colors.red[50]!;
+    case 'RequestShipToCus':
+      return Colors.cyan[50]!;
+    default:
+      return Colors.grey[50]!;
+  }
+}
+
+Color _statusTextColor(String status) {
+  switch (status.trim()) {
+    case 'Created':
+      return Colors.grey[800]!;
+    case 'ShippingToDesigner':
+      return Colors.indigo[700]!;
+    case 'DesignerRejected':
+      return Colors.red[700]!;
+    case 'InProgress':
+      return Colors.blue[700]!;
+    case 'Completed':
+      return Colors.green[700]!;
+    case 'ShippingToCustomer':
+      return Colors.orange[700]!;
+    case 'CustomerRejected':
+      return Colors.red[700]!;
+    case 'Done':
+      return Colors.teal[700]!;
+    case 'PendingConflict':
+      return Colors.amber[800]!;
+    case 'Rejected':
+      return Colors.red[700]!;
+    case 'RequestShipToCus':
+      return Colors.cyan[700]!;
+    default:
+      return Colors.grey[800]!;
+  }
+}
+
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({Key? key}) : super(key: key);
 
@@ -21,8 +94,17 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   final List<String> _statusOptions = [
     'Tất cả',
+    'Đã tạo mới',
+    'Đang giao cho NTK',
+    'NTK từ chối',
     'Đang thực hiện',
-    'Hoàn thành',
+    'Đã hoàn thành',
+    'Đang giao cho khách',
+    'Khách từ chối',
+    'Hoàn tất',
+    'Đang xử lý tranh chấp',
+    'Bị từ chối',
+    'Yêu cầu trả hàng cho KH',
     'Đã hủy',
   ];
 
@@ -55,18 +137,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
         // Filter by status
         bool statusMatch = _selectedStatus == 'Tất cả';
         if (!statusMatch) {
-          String statusText = '';
-          switch (orderStatus) {
-            case 'InProgress':
-              statusText = 'Đang thực hiện';
-              break;
-            case 'Completed':
-              statusText = 'Hoàn thành';
-              break;
-            case 'Cancelled':
-              statusText = 'Đã hủy';
-              break;
-          }
+          final statusText =
+              kOrderStatusViMap[orderStatus.toString().trim()] ??
+              (orderStatus.toString().trim().isEmpty
+                  ? '---'
+                  : orderStatus.toString().trim());
           statusMatch = statusText == _selectedStatus;
         }
 
@@ -251,7 +326,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     final note = order['note'] ?? '';
                     final startDate = order['startDate']?.toString() ?? '';
                     final deadlineAt = order['deadlineAt']?.toString() ?? '';
-                    final createdAt = order['createdAt'] ?? '';
+                    // final createdAt = order['createdAt'] ?? '';
 
                     // Format date
                     String formatDate(String dateString) {
@@ -266,16 +341,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
                     // Format status
                     String getStatusText(String status) {
-                      switch (status.trim()) {
-                        case 'InProgress':
-                          return 'Đang thực hiện';
-                        case 'Completed':
-                          return 'Hoàn thành';
-                        case 'Cancelled':
-                          return 'Đã hủy';
-                        default:
-                          return status.trim().isEmpty ? '---' : status;
-                      }
+                      final trimmed = status.trim();
+                      return kOrderStatusViMap[trimmed] ??
+                          (trimmed.isEmpty ? '---' : trimmed);
                     }
 
                     return GestureDetector(
@@ -326,21 +394,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: orderStatus == 'InProgress'
-                                          ? Colors.blue[50]
-                                          : orderStatus == 'Completed'
-                                          ? Colors.green[50]
-                                          : Colors.red[50],
+                                      color: _statusBgColor(orderStatus),
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Text(
                                       getStatusText(orderStatus),
                                       style: TextStyle(
-                                        color: orderStatus == 'InProgress'
-                                            ? Colors.blue[700]
-                                            : orderStatus == 'Completed'
-                                            ? Colors.green[700]
-                                            : Colors.red[700],
+                                        color: _statusTextColor(orderStatus),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                       ),

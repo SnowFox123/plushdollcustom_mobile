@@ -3,6 +3,83 @@ import 'package:timelines_plus/timelines_plus.dart';
 import '../services/progress_service.dart';
 import '../widgets/empty_order_widget.dart';
 
+// Mapping backend order statuses to Vietnamese labels (consistent with list screen)
+const Map<String, String> kOrderStatusViMap = {
+  'Created': 'Đã tạo mới',
+  'ShippingToDesigner': 'Đang giao cho NTK',
+  'DesignerRejected': 'NTK từ chối',
+  'InProgress': 'Đang thực hiện',
+  'Completed': 'Đã hoàn thành',
+  'ShippingToCustomer': 'Đang giao cho khách',
+  'CustomerRejected': 'Khách từ chối',
+  'Done': 'Hoàn tất',
+  'PendingConflict': 'Đang xử lý tranh chấp',
+  'Rejected': 'Bị từ chối',
+  'RequestShipToCus': 'Yêu cầu trả hàng cho KH',
+};
+
+Color _statusBgColor(String status) {
+  switch (status.trim()) {
+    case 'Created':
+      return Colors.grey[100]!;
+    case 'ShippingToDesigner':
+      return Colors.indigo[50]!;
+    case 'DesignerRejected':
+      return Colors.red[50]!;
+    case 'InProgress':
+      return Colors.blue[50]!;
+    case 'Completed':
+      return Colors.green[50]!;
+    case 'ShippingToCustomer':
+      return Colors.orange[50]!;
+    case 'CustomerRejected':
+      return Colors.red[50]!;
+    case 'Done':
+      return Colors.teal[50]!;
+    case 'PendingConflict':
+      return Colors.amber[50]!;
+    case 'Rejected':
+      return Colors.red[50]!;
+    case 'RequestShipToCus':
+      return Colors.cyan[50]!;
+    case 'Cancelled':
+      return Colors.red[50]!;
+    default:
+      return Colors.grey[50]!;
+  }
+}
+
+Color _statusTextColor(String status) {
+  switch (status.trim()) {
+    case 'Created':
+      return Colors.grey[800]!;
+    case 'ShippingToDesigner':
+      return Colors.indigo[700]!;
+    case 'DesignerRejected':
+      return Colors.red[700]!;
+    case 'InProgress':
+      return Colors.blue[700]!;
+    case 'Completed':
+      return Colors.green[700]!;
+    case 'ShippingToCustomer':
+      return Colors.orange[700]!;
+    case 'CustomerRejected':
+      return Colors.red[700]!;
+    case 'Done':
+      return Colors.teal[700]!;
+    case 'PendingConflict':
+      return Colors.amber[800]!;
+    case 'Rejected':
+      return Colors.red[700]!;
+    case 'RequestShipToCus':
+      return Colors.cyan[700]!;
+    case 'Cancelled':
+      return Colors.red[700]!;
+    default:
+      return Colors.grey[800]!;
+  }
+}
+
 // Hàm phóng to ảnh
 void _showImagePreview(String imageUrl, BuildContext context) {
   showDialog(
@@ -59,7 +136,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     switch (stepType) {
       case 'NewDesign':
         return 'Thiết kế mới';
-      case 'Redesign':
+      case 'Rework':
         return 'Làm lại';
       default:
         return stepType ?? '';
@@ -111,6 +188,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         return 'Yêu cầu chỉnh sửa';
       case 'Done':
         return 'Hoàn thành';
+      case 'Refund':
+        return 'Hoàn tiền';
       default:
         return status ?? '';
     }
@@ -242,15 +321,26 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue[50],
+                                  color: _statusBgColor(
+                                    (order['orderStatus'] ?? '').toString(),
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Text(
-                                  order['orderStatus'] == 'InProgress'
-                                      ? 'Đang thực hiện'
-                                      : order['orderStatus'] ?? '',
-                                  style: const TextStyle(
-                                    color: Colors.blue,
+                                  kOrderStatusViMap[(order['orderStatus'] ?? '')
+                                          .toString()
+                                          .trim()] ??
+                                      ((order['orderStatus'] ?? '')
+                                              .toString()
+                                              .trim()
+                                              .isEmpty
+                                          ? '---'
+                                          : (order['orderStatus'] ?? '')
+                                                .toString()),
+                                  style: TextStyle(
+                                    color: _statusTextColor(
+                                      (order['orderStatus'] ?? '').toString(),
+                                    ),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,
                                   ),
@@ -342,9 +432,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   contentsAlign: ContentsAlign.alternating,
                   oppositeContentsBuilder: (context, index) {
                     final phase = sortedPhases[index];
-                    final phaseValue = phase['phase'] ?? 0;
-                    final current = phaseValue == maxPhase;
-                    final done = phaseValue < maxPhase;
 
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -413,7 +500,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     final phaseValue = phase['phase'] ?? 0;
                     final current = phaseValue == maxPhase;
                     final done = phaseValue < maxPhase;
-                    final phaseNumber = phase['phase'] ?? (index + 1);
+                    // final phaseNumber = phase['phase'] ?? (index + 1);
                     final phaseId = phase['offerPhaseID'] ?? '';
 
                     return Card(
@@ -573,7 +660,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
     switch (stepType) {
       case 'NewDesign':
         return 'Thiết kế mới';
-      case 'Redesign':
+      case 'Rework':
         return 'Làm lại';
       default:
         return stepType ?? '';
@@ -771,39 +858,54 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                   ],
 
                                   // Customer Approval Status
-                                  if (progressStep['isApprovedByCustomer'] !=
-                                      null) ...[
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          progressStep['isApprovedByCustomer'] ==
-                                                  true
-                                              ? Icons.check_circle
-                                              : Icons.pending,
-                                          size: 16,
-                                          color:
-                                              progressStep['isApprovedByCustomer'] ==
-                                                  true
-                                              ? Colors.green
-                                              : Colors.orange,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Khách hàng: ${progressStep['isApprovedByCustomer'] == true ? 'Đã duyệt' : 'Chờ duyệt'}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color:
-                                                progressStep['isApprovedByCustomer'] ==
-                                                    true
-                                                ? Colors.green[700]
-                                                : Colors.orange[700],
-                                            fontWeight: FontWeight.w500,
+                                  const SizedBox(height: 8),
+                                  Builder(
+                                    builder: (context) {
+                                      final approval =
+                                          progressStep['isApprovedByCustomer'];
+                                      // Determine label, icon and color based on approval state
+                                      String label;
+                                      IconData iconData;
+                                      Color iconColor;
+                                      Color textColor;
+
+                                      if (approval == true) {
+                                        label = 'Đồng ý';
+                                        iconData = Icons.check_circle;
+                                        iconColor = Colors.green;
+                                        textColor = Colors.green[700]!;
+                                      } else if (approval == false) {
+                                        label = 'Từ chối';
+                                        iconData = Icons.cancel;
+                                        iconColor = Colors.red;
+                                        textColor = Colors.red[700]!;
+                                      } else {
+                                        label = 'Chờ xem xét';
+                                        iconData = Icons.pending;
+                                        iconColor = Colors.orange;
+                                        textColor = Colors.orange[700]!;
+                                      }
+
+                                      return Row(
+                                        children: [
+                                          Icon(
+                                            iconData,
+                                            size: 16,
+                                            color: iconColor,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            'Khách hàng: $label',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: textColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
 
                                   // Customer Note
                                   if ((progressStep['customerNote'] ?? '')
@@ -868,9 +970,13 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                     const SizedBox(height: 8),
                                     LayoutBuilder(
                                       builder: (context, constraints) {
+                                        final isSixImages =
+                                            progressImages.length == 6;
                                         final imageWidth =
                                             progressImages.length == 1
                                             ? constraints.maxWidth * 0.6
+                                            : isSixImages
+                                            ? (constraints.maxWidth - 16) / 3
                                             : (constraints.maxWidth - 16) /
                                                   progressImages.length;
                                         final imageHeight =
