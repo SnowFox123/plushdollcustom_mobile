@@ -203,10 +203,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CircleAvatar(
                       radius: isLargeScreen ? 28 : 22,
                       backgroundColor: Colors.blue[100],
-                      backgroundImage: userProfile?['avatar'] != null
+                      backgroundImage:
+                          userProfile?['avatar'] != null &&
+                              userProfile!['avatar'].toString().isNotEmpty
                           ? NetworkImage(userProfile!['avatar'])
                           : null,
-                      child: userProfile?['avatar'] == null
+                      child:
+                          userProfile?['avatar'] == null ||
+                              userProfile!['avatar'].toString().isEmpty
                           ? Icon(
                               Icons.person,
                               size: isLargeScreen ? 28 : 22,

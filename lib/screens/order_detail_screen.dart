@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import '../services/progress_service.dart';
 import '../widgets/empty_order_widget.dart';
+import '../screens/create_review_screen.dart';
+import '../screens/view_review_screen.dart';
 
 // Mapping backend order statuses to Vietnamese labels (consistent with list screen)
 const Map<String, String> kOrderStatusViMap = {
@@ -601,6 +603,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                         ? Colors.grey[600]
                                         : Colors.grey[700],
                                   ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                               const SizedBox(height: 8),
@@ -907,6 +911,10 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                     },
                                   ),
 
+                                  // Review Buttons
+                                  const SizedBox(height: 12),
+                                  const SizedBox.shrink(),
+
                                   // Customer Note
                                   if ((progressStep['customerNote'] ?? '')
                                       .toString()
@@ -1082,6 +1090,119 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                         ),
                                       ),
                                     ],
+                                  ),
+
+                                  // Bottom action button (create/view review)
+                                  const SizedBox(height: 12),
+                                  Builder(
+                                    builder: (context) {
+                                      final approval =
+                                          progressStep['isApprovedByCustomer'];
+                                      final progressStepID =
+                                          progressStep['progressStepID'] ?? '';
+                                      final stepTitle =
+                                          progressStep['stepTitle'] ?? '';
+
+                                      if (approval == null) {
+                                        return SizedBox(
+                                          width: double.infinity,
+                                          height: 48,
+                                          child: ElevatedButton.icon(
+                                            onPressed: () async {
+                                              final result =
+                                                  await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CreateReviewScreen(
+                                                            progressStepID:
+                                                                progressStepID,
+                                                            stepTitle:
+                                                                stepTitle,
+                                                          ),
+                                                    ),
+                                                  );
+                                              if (result == true) {
+                                                _fetchProgress();
+                                              }
+                                            },
+                                            icon: const Icon(
+                                              Icons.rate_review,
+                                              size: 18,
+                                            ),
+                                            label: const Text(
+                                              'Tạo đánh giá',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.orange[600],
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 12,
+                                                  ),
+                                              minimumSize:
+                                                  const Size.fromHeight(48),
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return SizedBox(
+                                          width: double.infinity,
+                                          height: 48,
+                                          child: ElevatedButton.icon(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ViewReviewScreen(
+                                                        progressStepID:
+                                                            progressStepID,
+                                                        stepTitle: stepTitle,
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.visibility,
+                                              size: 18,
+                                            ),
+                                            label: const Text(
+                                              'Xem đánh giá',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue[600],
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 12,
+                                                  ),
+                                              minimumSize:
+                                                  const Size.fromHeight(48),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
