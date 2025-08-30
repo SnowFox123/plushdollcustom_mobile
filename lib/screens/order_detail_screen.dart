@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import '../services/progress_service.dart';
 import '../widgets/empty_order_widget.dart';
+import '../widgets/phase_status_badge.dart';
 import '../screens/create_review_screen.dart';
 import '../screens/view_review_screen.dart';
 
@@ -561,35 +562,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   if ((phase['offerPhaseStatus'] ?? '')
                                       .toString()
                                       .isNotEmpty)
-                                    Container(
+                                    PhaseStatusBadge(
+                                      phaseStatus: phase['offerPhaseStatus'],
+                                      fontSize: 9,
+                                      iconSize: 12,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 8,
                                         vertical: 3,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: current
-                                            ? Colors.white
-                                            : done
-                                            ? Colors.grey[200]
-                                            : Colors.blue[50],
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        mapPhaseStatusToVietnamese(
-                                          phase['offerPhaseStatus'],
-                                        ),
-                                        style: TextStyle(
-                                          fontSize: 9,
-                                          color: current
-                                              ? Colors.blue[600]
-                                              : done
-                                              ? Colors.grey[700]
-                                              : Colors.blue[700],
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                 ],

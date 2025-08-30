@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../redux/app_state.dart';
 import '../redux/auth_actions.dart';
 import '../services/user_service.dart';
+import '../constants/role_constants.dart';
 import 'login_screen.dart';
 import '../widgets/order_status_row.dart';
 
@@ -74,20 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   String _translateRole(String? role) {
-    switch (role) {
-      case 'Customer':
-        return 'Khách hàng';
-      case 'Freelancer':
-        return 'Freelancer';
-      case 'Admin':
-        return 'Quản trị viên';
-      case 'Staff':
-        return 'Nhân viên';
-      case 'Designer':
-        return 'Thiết kế';
-      default:
-        return role ?? 'Không xác định';
-    }
+    return RoleConstants.translateRole(role);
   }
 
   String _translateGender(String? gender) {

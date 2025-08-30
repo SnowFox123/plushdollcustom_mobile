@@ -4,7 +4,11 @@ enum PostStatus {
   notReceived(0, 'NotReceived', 'Đang hoạt động'),
   received(1, 'Received', 'Đang xử lý'),
   completed(2, 'Completed', 'Hoàn thành'),
-  locked(3, 'Locked', 'Bị khóa');
+  locked(3, 'Locked', 'Bị khóa'),
+  created(4, 'Created', 'Đã tạo'),
+  inProgress(5, 'InProgress', 'Đang thực hiện'),
+  cancelled(6, 'Cancelled', 'Đã hủy'),
+  pending(7, 'Pending', 'Chờ xử lý');
 
   const PostStatus(this.value, this.name, this.displayName);
 
@@ -36,6 +40,14 @@ enum PostStatus {
         return const Color(0xFF10B981); // Green
       case PostStatus.locked:
         return const Color(0xFFEF4444); // Red
+      case PostStatus.created:
+        return const Color(0xFF1E40AF); // Blue-800
+      case PostStatus.inProgress:
+        return const Color(0xFF7C3AED); // Purple-800
+      case PostStatus.cancelled:
+        return const Color(0xFFDC2626); // Red-800
+      case PostStatus.pending:
+        return const Color(0xFFCA8A04); // Yellow-800
     }
   }
 
@@ -49,6 +61,14 @@ enum PostStatus {
         return const Color(0xFFD1FAE5); // Light green
       case PostStatus.locked:
         return const Color(0xFFFEE2E2); // Light red
+      case PostStatus.created:
+        return const Color(0xFFDBEAFE); // Blue-100
+      case PostStatus.inProgress:
+        return const Color(0xFFF3E8FF); // Purple-100
+      case PostStatus.cancelled:
+        return const Color(0xFFFEE2E2); // Red-100
+      case PostStatus.pending:
+        return const Color(0xFFFEF3C7); // Yellow-100
     }
   }
 
@@ -62,6 +82,14 @@ enum PostStatus {
         return Icons.task_alt;
       case PostStatus.locked:
         return Icons.lock;
+      case PostStatus.created:
+        return Icons.check_circle;
+      case PostStatus.inProgress:
+        return Icons.access_time;
+      case PostStatus.cancelled:
+        return Icons.cancel;
+      case PostStatus.pending:
+        return Icons.access_time;
     }
   }
 }

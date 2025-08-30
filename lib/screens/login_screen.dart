@@ -4,6 +4,8 @@ import 'package:PlushDollCustom/redux/app_state.dart';
 import 'package:PlushDollCustom/redux/auth_actions.dart';
 import 'package:PlushDollCustom/services/auth_service.dart';
 import 'package:PlushDollCustom/screens/home_screen.dart';
+import 'package:PlushDollCustom/constants/role_constants.dart';
+import 'package:PlushDollCustom/exceptions/auth_exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,9 +54,108 @@ class _LoginScreenState extends State<LoginScreen>
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      String errorMessage = e.toString();
+
+      // Handle null or empty error messages
+      if (errorMessage.isEmpty) {
+        errorMessage = 'Đã xảy ra lỗi không xác định. Vui lòng thử lại.';
+      }
+
+      // Check if it's a role-based access error
+      if (e is RoleAccessDeniedException) {
+        // Show a more prominent error dialog for role-based access
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.blue, size: 18),
+                  SizedBox(width: 8),
+                  Text(
+                    'Thông báo',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                      children: [
+                        TextSpan(text: 'Tài khoản '),
+                        TextSpan(
+                          text: RoleConstants.translateRole(
+                            (e as RoleAccessDeniedException).role,
+                          ),
+                          style: TextStyle(
+                            color: RoleConstants.getRoleColor(
+                              (e as RoleAccessDeniedException).role,
+                            ),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                              ' không được hỗ trợ trên ứng dụng di động. Ứng dụng di động chỉ dành cho khách hàng.',
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.computer, color: Colors.orange, size: 16),
+                        SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'Vui lòng truy cập website để sử dụng đầy đủ tính năng dành cho bạn.',
+                            style: TextStyle(
+                              color: Colors.orange[700],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size(80, 36),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  child: Text('Đã hiểu', style: TextStyle(fontSize: 13)),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // Show regular snackbar for other errors
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        );
+      }
     } finally {
       setState(() => loading = false);
     }

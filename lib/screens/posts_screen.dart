@@ -210,14 +210,17 @@ class _PostsScreenState extends State<PostsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      (post['originalImages'] != null &&
-                                          post['originalImages'].isNotEmpty)
-                                      ? post['originalImages'][0]['imageUrl']
-                                      : 'assets/images/logo_hinh.png',
-                                  width: double.infinity,
-                                  fit: BoxFit.contain,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 16),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        (post['originalImages'] != null &&
+                                            post['originalImages'].isNotEmpty)
+                                        ? post['originalImages'][0]['imageUrl']
+                                        : 'assets/images/logo_hinh.png',
+                                    width: double.infinity,
+                                    fit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                               Padding(

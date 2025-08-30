@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../constants/post_status_constants.dart';
+import '../constants/phase_status_constants.dart';
 
-class PostStatusBadge extends StatelessWidget {
-  final dynamic postStatus;
+class PhaseStatusBadge extends StatelessWidget {
+  final dynamic phaseStatus;
   final double? fontSize;
   final double? iconSize;
   final EdgeInsetsGeometry? padding;
   final bool showIcon;
 
-  const PostStatusBadge({
+  const PhaseStatusBadge({
     super.key,
-    required this.postStatus,
+    required this.phaseStatus,
     this.fontSize,
     this.iconSize,
     this.padding,
@@ -20,39 +20,47 @@ class PostStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Handle both int and string status values
-    PostStatus status;
-    if (postStatus is int) {
-      status = PostStatus.fromValue(postStatus);
-    } else if (postStatus is String) {
-      // Try to find by name first, then fallback to notReceived
+    PhaseStatus status;
+    if (phaseStatus is int) {
+      status = PhaseStatus.fromValue(phaseStatus);
+    } else if (phaseStatus is String) {
+      // Try to find by name first, then fallback to notStarted
       try {
-        status = PostStatus.fromName(postStatus);
+        status = PhaseStatus.fromName(phaseStatus);
       } catch (e) {
         // If not found, try to map common status names
-        switch (postStatus.toLowerCase()) {
-          case 'created':
-            status = PostStatus.created;
+        switch (phaseStatus.toLowerCase()) {
+          case 'notstarted':
+            status = PhaseStatus.notStarted;
+            break;
+          case 'dealed':
+            status = PhaseStatus.dealed;
+            break;
+          case 'deposited':
+            status = PhaseStatus.deposited;
+            break;
+          case 'withdrawed':
+            status = PhaseStatus.withdrawed;
             break;
           case 'inprogress':
           case 'in_progress':
-            status = PostStatus.inProgress;
+            status = PhaseStatus.inProgress;
             break;
-          case 'completed':
-            status = PostStatus.completed;
+          case 'rework':
+            status = PhaseStatus.rework;
             break;
-          case 'cancelled':
-          case 'canceled':
-            status = PostStatus.cancelled;
+          case 'done':
+            status = PhaseStatus.done;
             break;
-          case 'pending':
-            status = PostStatus.pending;
+          case 'refund':
+            status = PhaseStatus.refund;
             break;
           default:
-            status = PostStatus.notReceived;
+            status = PhaseStatus.notStarted;
         }
       }
     } else {
-      status = PostStatus.notReceived;
+      status = PhaseStatus.notStarted;
     }
 
     return Container(
