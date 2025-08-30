@@ -244,14 +244,27 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                           MediaQuery.of(context).size.width > 600 ? 28 : 22,
                         ),
                       ),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          post!['avatar'] ?? 'assets/images/logo_hinh.png',
-                        ),
-                        radius: MediaQuery.of(context).size.width > 600
-                            ? 26
-                            : 20,
-                      ),
+                      child:
+                          post!['avatar'] != null && post!['avatar'].isNotEmpty
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(post!['avatar']),
+                              radius: MediaQuery.of(context).size.width > 600
+                                  ? 26
+                                  : 20,
+                            )
+                          : CircleAvatar(
+                              backgroundColor: Colors.white.withOpacity(0.2),
+                              radius: MediaQuery.of(context).size.width > 600
+                                  ? 26
+                                  : 20,
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width > 600
+                                    ? 24
+                                    : 20,
+                              ),
+                            ),
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width > 600 ? 16 : 10,
@@ -286,86 +299,59 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                           ),
                           // Responsive date row - stack vertically on small screens
                           MediaQuery.of(context).size.width > 600
-                              ? Row(
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.create,
-                                            size: 18,
-                                            color: Colors.white70,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Ngày tạo',
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.white60,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  _formatDateTime(
-                                                    post!['createdAt'],
-                                                  ),
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white70,
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ],
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            'Ngày tạo',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white60,
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            'Ngày hoàn thành',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white60,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.schedule,
-                                            size: 18,
-                                            color: Colors.white70,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Hạn chót',
-                                                  style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.white60,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  post!['finishDate'] != null
-                                                      ? _formatDateTime(
-                                                          post!['finishDate'],
-                                                        )
-                                                      : '---',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white70,
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ],
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            _formatDateTime(post!['createdAt']),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white70,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            post!['finishDate'] != null
+                                                ? _formatDateTime(
+                                                    post!['finishDate'],
+                                                  )
+                                                : '---',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white70,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 )
@@ -374,73 +360,51 @@ class _PostDetailScreenState extends State<PostDetailScreen>
                                   children: [
                                     Row(
                                       children: [
-                                        const Icon(
-                                          Icons.create,
-                                          size: 14,
-                                          color: Colors.white70,
-                                        ),
-                                        const SizedBox(width: 3),
                                         Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Ngày tạo',
-                                                style: const TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.white60,
-                                                ),
-                                              ),
-                                              Text(
-                                                _formatDateTime(
-                                                  post!['createdAt'],
-                                                ),
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white70,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
+                                          child: Text(
+                                            'Ngày tạo',
+                                            style: const TextStyle(
+                                              fontSize: 9,
+                                              color: Colors.white60,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            'Ngày hoàn thành',
+                                            style: const TextStyle(
+                                              fontSize: 9,
+                                              color: Colors.white60,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 2),
                                     Row(
                                       children: [
-                                        const Icon(
-                                          Icons.schedule,
-                                          size: 14,
-                                          color: Colors.white70,
-                                        ),
-                                        const SizedBox(width: 3),
                                         Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Hạn chót',
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.white60,
-                                                ),
-                                              ),
-                                              Text(
-                                                post!['finishDate'] != null
-                                                    ? _formatDateTime(
-                                                        post!['finishDate'],
-                                                      )
-                                                    : '---',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white70,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
+                                          child: Text(
+                                            _formatDateTime(post!['createdAt']),
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.white70,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            post!['finishDate'] != null
+                                                ? _formatDateTime(
+                                                    post!['finishDate'],
+                                                  )
+                                                : '---',
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.white70,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                       ],

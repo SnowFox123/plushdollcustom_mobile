@@ -67,7 +67,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: isLargeScreen ? 20 : 16,
+                fontSize: isLargeScreen ? 16 : 14,
               ),
             ),
             Spacer(),
@@ -274,14 +274,16 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                               'Ngày tạo',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: isLargeScreen ? 16 : 14,
+                                fontSize: isLargeScreen ? 12 : 10,
+                                color: Colors.grey[700],
                               ),
                             ),
-                            SizedBox(height: isLargeScreen ? 6 : 4),
+                            SizedBox(height: isLargeScreen ? 4 : 2),
                             Text(
                               _formatDate(deliveryDetail!['createdAt'] ?? ''),
                               style: TextStyle(
-                                fontSize: isLargeScreen ? 15 : 13,
+                                fontSize: isLargeScreen ? 11 : 9,
+                                color: Colors.grey[600],
                               ),
                             ),
                           ],
@@ -296,16 +298,18 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                               'Ngày giao hàng',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: isLargeScreen ? 16 : 14,
+                                fontSize: isLargeScreen ? 12 : 10,
+                                color: Colors.grey[700],
                               ),
                             ),
-                            SizedBox(height: isLargeScreen ? 6 : 4),
+                            SizedBox(height: isLargeScreen ? 4 : 2),
                             Text(
                               deliveryDetail!['deliveredAt'] != null
                                   ? _formatDate(deliveryDetail!['deliveredAt'])
                                   : 'Chưa có',
                               style: TextStyle(
-                                fontSize: isLargeScreen ? 15 : 13,
+                                fontSize: isLargeScreen ? 11 : 9,
+                                color: Colors.grey[600],
                               ),
                             ),
                           ],

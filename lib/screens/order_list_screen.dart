@@ -175,12 +175,12 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   child: TextField(
                     controller: _searchController,
                     autofocus: true,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                     decoration: InputDecoration(
                       hintText: 'Tìm kiếm...',
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.7),
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -208,7 +208,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
               : const Text(
                   'Đơn hàng của tôi',
                   key: ValueKey('title'),
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 18),
                 ),
         ),
         backgroundColor: Colors.blue[600],
@@ -253,40 +253,62 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: _statusOptions.map((status) {
-                            final isSelected = _selectedStatus == status;
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: FilterChip(
-                                label: Text(status),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    _selectedStatus = status;
-                                    _filterOrders();
-                                  });
-                                },
-                                backgroundColor: Colors.grey[200],
-                                selectedColor: Colors.blue[100],
-                                labelStyle: TextStyle(
-                                  color: isSelected
-                                      ? Colors.blue[700]
-                                      : Colors.grey[700],
-                                  fontWeight: isSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.blue[200]!),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blue.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _selectedStatus,
+                            isExpanded: true,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.blue[600],
+                              size: 16,
+                            ),
+                            style: TextStyle(
+                              color: Colors.blue[700],
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            items: _statusOptions.map((String status) {
+                              return DropdownMenuItem<String>(
+                                value: status,
+                                child: Text(
+                                  status,
+                                  style: TextStyle(
+                                    color: status == _selectedStatus
+                                        ? Colors.blue[700]
+                                        : Colors.grey[700],
+                                    fontWeight: status == _selectedStatus
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
+                                  ),
                                 ),
-                                side: BorderSide(
-                                  color: isSelected
-                                      ? Colors.blue[600]!
-                                      : Colors.grey[300]!,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  _selectedStatus = newValue;
+                                  _filterOrders();
+                                });
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -383,7 +405,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                       'Đơn hàng #${orderID.length > 8 ? orderID.substring(0, 8) + '...' : orderID}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         color: Colors.black87,
                                       ),
                                     ),
@@ -402,7 +424,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                       style: TextStyle(
                                         color: _statusTextColor(orderStatus),
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 14,
+                                        fontSize: 12,
                                       ),
                                     ),
                                   ),
@@ -424,7 +446,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   note.isNotEmpty ? note : 'Không có ghi chú',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.blueAccent,
                                   ),
@@ -439,7 +461,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   const Text(
                                     'Tổng tiền:',
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 13,
                                       color: Colors.black87,
                                     ),
                                   ),
@@ -447,7 +469,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                     formatCurrency(totalPrice),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                      fontSize: 13,
                                       color: Colors.blueAccent,
                                     ),
                                   ),
@@ -461,14 +483,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   const Text(
                                     'Đặt cọc yêu cầu:',
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 13,
                                       color: Colors.black87,
                                     ),
                                   ),
                                   Text(
                                     formatCurrency(requiredDeposit),
                                     style: const TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 13,
                                       color: Colors.green,
                                     ),
                                   ),
@@ -482,14 +504,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   const Text(
                                     'Designer đã cọc:',
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 13,
                                       color: Colors.black87,
                                     ),
                                   ),
                                   Text(
                                     formatCurrency(designerDeposit),
                                     style: const TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 13,
                                       color: Colors.orange,
                                     ),
                                   ),
@@ -501,14 +523,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                 children: [
                                   const Icon(
                                     Icons.calendar_today,
-                                    size: 18,
+                                    size: 14,
                                     color: Colors.grey,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Bắt đầu:',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 10,
                                       color: Colors.grey[700],
                                     ),
                                   ),
@@ -516,21 +538,21 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   Text(
                                     formatDate(startDate),
                                     style: const TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 10,
                                       color: Colors.black87,
                                     ),
                                   ),
                                   const Spacer(),
                                   const Icon(
                                     Icons.access_time,
-                                    size: 18,
+                                    size: 14,
                                     color: Colors.redAccent,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Hoàn thành:',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 10,
                                       color: Colors.redAccent,
                                     ),
                                   ),
@@ -538,7 +560,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                                   Text(
                                     formatDate(deadlineAt),
                                     style: const TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 10,
                                       color: Colors.redAccent,
                                     ),
                                   ),

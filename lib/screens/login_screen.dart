@@ -275,6 +275,47 @@ class _LoginScreenState extends State<LoginScreen>
                                           ),
                                         ),
                                 ),
+
+                                const SizedBox(height: 20),
+
+                                // Nút chuyển sang trang đăng ký
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Chưa có tài khoản? ',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          // TODO: Navigate to registration screen
+                                          print(
+                                            'Chức năng đăng ký sẽ được phát triển sau',
+                                          );
+                                        },
+                                        child: AnimatedContainer(
+                                          duration: const Duration(
+                                            milliseconds: 200,
+                                          ),
+                                          child: const Text(
+                                            'Đăng ký ngay',
+                                            style: TextStyle(
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),

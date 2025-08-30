@@ -358,44 +358,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 16),
             ],
 
-            const Text(
-              'Đơn mua',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            // Đơn mua row
-            OrderStatusRow(
-              // waitingConfirm: 0, // TODO: truyền số thực tế
-              // waitingPickup: 1, // TODO: truyền số thực tế
-              // delivering: 0, // TODO: truyền số thực tế
-              // toReview: 2, // TODO: truyền số thực tế
-              onTap: (status) {
-                // Map status code to Vietnamese display name
-                String initialStatus = 'Tất cả';
-                switch (status) {
-                  case 'ReadyToPick':
-                    initialStatus = 'Sẵn sàng lấy hàng';
-                    break;
-                  case 'Picked':
-                    initialStatus = 'Đã lấy hàng';
-                    break;
-                  case 'Delivering':
-                    initialStatus = 'Đang giao';
-                    break;
-                  case 'Delivered':
-                    initialStatus = 'Đã giao';
-                    break;
-                }
-
-                // Navigate to DeliveryListScreen with the selected status
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        DeliveryListScreen(initialStatus: initialStatus),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Column(
+                children: [
+                  // Header
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.shopping_bag_outlined,
+                        color: Colors.blue[600],
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Đơn mua',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue[700],
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
+                  const SizedBox(height: 16),
+                  // Đơn mua row
+                  OrderStatusRow(
+                    // waitingConfirm: 0, // TODO: truyền số thực tế
+                    // waitingPickup: 1, // TODO: truyền số thực tế
+                    // delivering: 0, // TODO: truyền số thực tế
+                    // toReview: 2, // TODO: truyền số thực tế
+                    onTap: (status) {
+                      // Map status code to Vietnamese display name
+                      String initialStatus = 'Tất cả';
+                      switch (status) {
+                        case 'ReadyToPick':
+                          initialStatus = 'Sẵn sàng lấy hàng';
+                          break;
+                        case 'Picked':
+                          initialStatus = 'Đã lấy hàng';
+                          break;
+                        case 'Delivering':
+                          initialStatus = 'Đang giao';
+                          break;
+                        case 'Delivered':
+                          initialStatus = 'Đã giao';
+                          break;
+                      }
+
+                      // Navigate to DeliveryListScreen with the selected status
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              DeliveryListScreen(initialStatus: initialStatus),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 

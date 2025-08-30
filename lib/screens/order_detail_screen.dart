@@ -187,7 +187,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       case 'InProgress':
         return 'Đang thực hiện';
       case 'Rework':
-        return 'Yêu cầu chỉnh sửa';
+        return 'Yêu cầu\nchỉnh sửa';
       case 'Done':
         return 'Hoàn thành';
       case 'Refund':
@@ -249,7 +249,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         backgroundColor: Colors.blue[600],
         foregroundColor: Colors.white,
         titleTextStyle: const TextStyle(
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
@@ -281,13 +281,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(
                             offer['sampleImage'],
-                            width: 80,
-                            height: 80,
+                            width: 50,
+                            height: 50,
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) =>
                                 Container(
-                                  width: 80,
-                                  height: 80,
+                                  width: 50,
+                                  height: 50,
                                   color: Colors.grey[200],
                                   child: const Center(
                                     child: Icon(
@@ -300,7 +300,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                     ],
                     Expanded(
                       child: Column(
@@ -313,7 +313,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   'Đơn hàng#${(order['orderID'] ?? '').toString().length > 8 ? (order['orderID'] ?? '').toString().substring(0, 8) + '...' : (order['orderID'] ?? '')}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -344,7 +344,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                       (order['orderStatus'] ?? '').toString(),
                                     ),
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 13,
+                                    fontSize: 11,
                                   ),
                                 ),
                               ),
@@ -361,7 +361,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               const SizedBox(width: 4),
                               Text(
                                 order['customerName'] ?? '',
-                                style: const TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 12),
                               ),
                               const Spacer(),
                               Icon(
@@ -372,7 +372,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               const SizedBox(width: 4),
                               Text(
                                 order['designerName'] ?? '',
-                                style: const TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 12),
                               ),
                             ],
                           ),
@@ -384,7 +384,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 formatCurrency(order['totalPrice'] ?? 0),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 15,
+                                  fontSize: 13,
                                   color: Theme.of(context).primaryColor,
                                 ),
                               ),
@@ -399,7 +399,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 'Hoàn thành: ${formatDate(order['deadlineAt'])}',
                                 style: const TextStyle(
                                   color: Colors.redAccent,
-                                  fontSize: 14,
+                                  fontSize: 10,
                                 ),
                               ),
                             ],
@@ -416,7 +416,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               'Các giai đoạn thực hiện (${offerPhases.length})',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.blue[800],
               ),
             ),
@@ -547,13 +547,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                       phase['phaseName'] ?? '',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 17,
+                                        fontSize: 12,
                                         color: current
                                             ? Colors.white
                                             : done
                                             ? Colors.grey[700]
                                             : Colors.blue[800],
                                       ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   if ((phase['offerPhaseStatus'] ?? '')
@@ -561,8 +563,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                       .isNotEmpty)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 4,
+                                        horizontal: 8,
+                                        vertical: 3,
                                       ),
                                       decoration: BoxDecoration(
                                         color: current
@@ -570,14 +572,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                             : done
                                             ? Colors.grey[200]
                                             : Colors.blue[50],
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
                                         mapPhaseStatusToVietnamese(
                                           phase['offerPhaseStatus'],
                                         ),
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 9,
                                           color: current
                                               ? Colors.blue[600]
                                               : done
@@ -585,6 +587,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                               : Colors.blue[700],
                                           fontWeight: FontWeight.bold,
                                         ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                 ],
@@ -596,7 +601,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 Text(
                                   (phase['phaseDescription'] ?? '').toString(),
                                   style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 13,
                                     color: current
                                         ? Colors.white70
                                         : done
@@ -612,7 +617,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 formatCurrency(phase['offerPhasePrice'] ?? 0),
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 15,
+                                  fontSize: 13,
                                   color: current
                                       ? Colors.white
                                       : done
@@ -670,6 +675,8 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
         return stepType ?? '';
     }
   }
+
+
 
   @override
   void initState() {
@@ -737,7 +744,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                       'Chi tiết tiến độ: ${widget.phaseName}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 13,
                         color: Colors.blue,
                       ),
                     ),
@@ -789,7 +796,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                           progressStep['stepTitle'] ?? '',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                            fontSize: 14,
                                           ),
                                         ),
                                       ),
@@ -803,12 +810,20 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                             vertical: 4,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: Colors.green[50],
+                                            color:
+                                                progressStep['progressStepType'] ==
+                                                    'Rework'
+                                                ? Colors.purple[50]
+                                                : Colors.green[50],
                                             borderRadius: BorderRadius.circular(
                                               6,
                                             ),
                                             border: Border.all(
-                                              color: Colors.green[200]!,
+                                              color:
+                                                  progressStep['progressStepType'] ==
+                                                      'Rework'
+                                                  ? Colors.purple[200]!
+                                                  : Colors.green[200]!,
                                             ),
                                           ),
                                           child: Text(
@@ -816,8 +831,12 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                               progressStep['progressStepType'],
                                             ),
                                             style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.green[700],
+                                              fontSize: 10,
+                                              color:
+                                                  progressStep['progressStepType'] ==
+                                                      'Rework'
+                                                  ? Colors.purple[700]
+                                                  : Colors.green[700],
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -840,7 +859,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                           style: TextStyle(
                                             color: Colors.blue[700],
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 12,
+                                            fontSize: 10,
                                           ),
                                         ),
                                       ),
@@ -855,7 +874,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                     Text(
                                       progressStep['description'] ?? '',
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         color: Colors.grey[600],
                                       ),
                                     ),
@@ -901,7 +920,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                           Text(
                                             'Khách hàng: $label',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 10,
                                               color: textColor,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -937,7 +956,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                             'Ghi chú khách hàng:',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
-                                              fontSize: 12,
+                                              fontSize: 10,
                                               color: Colors.orange[700],
                                             ),
                                           ),
@@ -945,7 +964,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                           Text(
                                             progressStep['customerNote'] ?? '',
                                             style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 11,
                                               color: Colors.orange[800],
                                             ),
                                           ),
@@ -969,7 +988,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                           'Hình ảnh (${progressImages.length})',
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 14,
+                                            fontSize: 12,
                                             color: Colors.grey[700],
                                           ),
                                         ),
@@ -982,15 +1001,15 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                             progressImages.length == 6;
                                         final imageWidth =
                                             progressImages.length == 1
-                                            ? constraints.maxWidth * 0.6
+                                            ? constraints.maxWidth * 0.4
                                             : isSixImages
                                             ? (constraints.maxWidth - 16) / 3
                                             : (constraints.maxWidth - 16) /
                                                   progressImages.length;
                                         final imageHeight =
                                             progressImages.length == 1
-                                            ? 200.0
-                                            : 120.0;
+                                            ? 120.0
+                                            : 80.0;
 
                                         return Wrap(
                                           spacing: 8,
@@ -1052,7 +1071,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                                       image['description'] ??
                                                           '',
                                                       style: TextStyle(
-                                                        fontSize: 11,
+                                                        fontSize: 9,
                                                         color: Colors.grey[600],
                                                       ),
                                                       textAlign:
@@ -1085,7 +1104,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                       Text(
                                         'Cập nhật: ${formatDate(progressStep['updateAt'])}',
                                         style: TextStyle(
-                                          fontSize: 11,
+                                          fontSize: 9,
                                           color: Colors.grey[500],
                                         ),
                                       ),
@@ -1133,7 +1152,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                             label: const Text(
                                               'Tạo đánh giá',
                                               style: TextStyle(
-                                                fontSize: 15,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -1180,7 +1199,7 @@ class _PhaseProgressDetailSheetState extends State<PhaseProgressDetailSheet> {
                                             label: const Text(
                                               'Xem đánh giá',
                                               style: TextStyle(
-                                                fontSize: 15,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),

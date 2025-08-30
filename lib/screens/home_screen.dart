@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Icon(Icons.post_add, size: _currentIndex == 0 ? 26 : 24),
               ),
-              label: 'Bài đăng',
+              label: 'Bài đăng của tôi',
             ),
             BottomNavigationBarItem(
               icon: Container(

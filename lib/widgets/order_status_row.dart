@@ -20,9 +20,9 @@ class OrderStatusRow extends StatelessWidget {
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: mainDeliveryStatuses.map((status) {
             final orderStatus = OrderStatus.getByCode(status);
 
@@ -48,12 +48,14 @@ class OrderStatusRow extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Icon(icon, size: 32, color: color),
-          const SizedBox(height: 4),
+          Icon(icon, size: 24, color: color),
+          const SizedBox(height: 3),
           Text(
             label,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 10),
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

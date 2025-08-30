@@ -125,7 +125,7 @@ class _PostsScreenState extends State<PostsScreen> {
                   ),
                 )
               : const Text(
-                  'Bài đăng dự án',
+                  'Bài đăng của tôi',
                   key: ValueKey('title'),
                   style: TextStyle(fontSize: 20),
                 ),
@@ -225,30 +225,6 @@ class _PostsScreenState extends State<PostsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 14,
-                                          backgroundImage:
-                                              CachedNetworkImageProvider(
-                                                post['avatar'] ?? '',
-                                              ),
-                                          backgroundColor: Colors.grey[300],
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            post['fullName'] ?? 'Unknown',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 13,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 6),
                                     Text(
                                       post['title'] ?? 'Không có tiêu đề',
                                       style: const TextStyle(
@@ -260,80 +236,136 @@ class _PostsScreenState extends State<PostsScreen> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 4),
-                                    Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Giá sản phẩm: ',
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                            ),
+                                    Row(
+                                      children: [
+                                        Expanded(child: Container()),
+                                        PostStatusBadge(
+                                          postStatus: post['postStatus'],
+                                          fontSize: 10,
+                                          iconSize: 12,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 2,
+                                            horizontal: 6,
                                           ),
-                                          TextSpan(
-                                            text: _formatCurrency(
-                                              post['itemValue'],
-                                            ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Giá sản phẩm:',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            _formatCurrency(post['itemValue']),
                                             style: const TextStyle(
+                                              fontSize: 12,
                                               color: Colors.blue,
                                               fontWeight: FontWeight.bold,
                                             ),
+                                            textAlign: TextAlign.right,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ],
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 2),
-
-                                    Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Ngân sách: ',
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                            ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Ngân sách:',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black87,
                                           ),
-                                          TextSpan(
-                                            text: _formatCurrency(
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            _formatCurrency(
                                               post['suggestedPrice'],
                                             ),
                                             style: const TextStyle(
+                                              fontSize: 12,
                                               color: Colors.green,
                                               fontWeight: FontWeight.bold,
                                             ),
+                                            textAlign: TextAlign.right,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ],
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-
-                                    const SizedBox(height: 4),
-                                    PostStatusBadge(
-                                      postStatus: post['postStatus'],
-                                      fontSize: 10,
-                                      iconSize: 12,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 2,
-                                        horizontal: 6,
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 6),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        const Icon(
-                                          Icons.calendar_today,
-                                          size: 13,
-                                          color: Colors.grey,
+                                        Text(
+                                          'Ngày tạo:',
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                         const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            post['createdAt'] != null
+                                                ? DateFormat(
+                                                    'dd/MM/yyyy',
+                                                  ).format(
+                                                    DateTime.parse(
+                                                      post['createdAt'],
+                                                    ).add(
+                                                      const Duration(hours: 7),
+                                                    ),
+                                                  )
+                                                : 'N/A',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.grey,
+                                            ),
+                                            textAlign: TextAlign.right,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      children: [
                                         Text(
-                                          '${DateFormat('dd/MM/yyyy').format(DateTime.parse(post['finishDate']).add(const Duration(hours: 7)))}',
+                                          'Hoàn thành:',
                                           style: const TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 10,
                                             color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            post['finishDate'] != null
+                                                ? DateFormat(
+                                                    'dd/MM/yyyy',
+                                                  ).format(
+                                                    DateTime.parse(
+                                                      post['finishDate'],
+                                                    ).add(
+                                                      const Duration(hours: 7),
+                                                    ),
+                                                  )
+                                                : 'N/A',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.grey,
+                                            ),
+                                            textAlign: TextAlign.right,
                                           ),
                                         ),
                                       ],

@@ -195,17 +195,28 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                           });
                         },
                       ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          '$_qualityScore/10',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                      
+                      // const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Rất kém',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
                           ),
-                        ),
+                          Text(
+                            'Rất tốt',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       Builder(
                         builder: (_) {
                           final pass = _isPass();
@@ -213,11 +224,20 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: pass ? Colors.green[50] : Colors.red[50],
+                                  color: pass
+                                      ? Colors.green[50]
+                                      : Colors.red[50],
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: pass ? Colors.green[200]! : Colors.red[200]!),
+                                  border: Border.all(
+                                    color: pass
+                                        ? Colors.green[200]!
+                                        : Colors.red[200]!,
+                                  ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -225,7 +245,9 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                                     Icon(
                                       pass ? Icons.check_circle : Icons.cancel,
                                       size: 16,
-                                      color: pass ? Colors.green[700] : Colors.red[700],
+                                      color: pass
+                                          ? Colors.green[700]
+                                          : Colors.red[700],
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
@@ -233,7 +255,9 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: pass ? Colors.green[700] : Colors.red[700],
+                                        color: pass
+                                            ? Colors.green[700]
+                                            : Colors.red[700],
                                       ),
                                     ),
                                   ],
@@ -241,7 +265,10 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                               ),
                               const SizedBox(width: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[50],
                                   borderRadius: BorderRadius.circular(8),
@@ -270,25 +297,6 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                             ],
                           );
                         },
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Rất kém',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Text(
-                            'Rất tốt',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
