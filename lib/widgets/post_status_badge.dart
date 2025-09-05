@@ -24,35 +24,31 @@ class PostStatusBadge extends StatelessWidget {
     if (postStatus is int) {
       status = PostStatus.fromValue(postStatus);
     } else if (postStatus is String) {
-      // Try to find by name first, then fallback to notReceived
+      // Try to find by name first, then fallback to unknown
       try {
         status = PostStatus.fromName(postStatus);
       } catch (e) {
-        // If not found, try to map common status names
         switch (postStatus.toLowerCase()) {
-          case 'created':
-            status = PostStatus.created;
+          case 'locked':
+            status = PostStatus.locked;
             break;
-          case 'inprogress':
-          case 'in_progress':
-            status = PostStatus.inProgress;
+          case 'notreceived':
+          case 'not_received':
+          case 'not-received':
+            status = PostStatus.notReceived;
+            break;
+          case 'received':
+            status = PostStatus.received;
             break;
           case 'completed':
             status = PostStatus.completed;
             break;
-          case 'cancelled':
-          case 'canceled':
-            status = PostStatus.cancelled;
-            break;
-          case 'pending':
-            status = PostStatus.pending;
-            break;
           default:
-            status = PostStatus.notReceived;
+            status = PostStatus.unknown;
         }
       }
     } else {
-      status = PostStatus.notReceived;
+      status = PostStatus.unknown;
     }
 
     return Container(
